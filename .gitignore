@@ -1,3 +1,6 @@
+# All that is starting with a dot would be ignored
+.*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
