@@ -1,0 +1,10 @@
+{
+    "domain": "lights_control",
+    "name": "Lights Control",
+    "documentation": "https://github.com/godhart/hass-lights-control",
+    "requirements": [],
+    "dependencies": [],
+    "codeowners": [
+        "@godhart"
+    ]
+}

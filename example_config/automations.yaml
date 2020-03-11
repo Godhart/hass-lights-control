@@ -1,0 +1,20 @@
+#[]
+- alias: 'Lights watchdog'
+  trigger:
+    platform: time_pattern
+    minutes: "/1" # Every minute
+  action:
+    - service: lights_control.watchdog
+
+- alias: 'TestLedAutomation'
+  trigger:
+    platform: time_pattern
+    minutes: "/6000" # Every 100 Hours
+  action:
+    - service: lights_control.watchdog
+- alias: 'TestGroupAutomation'
+  trigger:
+    platform: time_pattern
+    minutes: "/6000" # Every 100 Hours
+  action:
+    - service: lights_control.watchdog

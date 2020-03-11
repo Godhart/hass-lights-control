@@ -1,0 +1,107 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: 45.0
+  longitude: 45.0
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 200
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: Europe/Moscow
+  # Customization file
+  customize: !include customize.yaml
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+# http:
+#   base_url: example.duckdns.org:8123
+
+# Discover some devices automatically
+# discovery:
+
+# Sensors
+sensor:
+  # Weather prediction
+  - platform: yr
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+
+lights_control: !include lights_control.yaml
+
+input_boolean:
+  # Test Configuration
+  testled:
+  testled2:
+  testled3:
+  occupancytestsensor1:
+  occupancytestsensor2:
+  occupancytestsensor3:
+  occupancytestsensor4:
+  occupancytestsensor5:
+  occupancytestsensorg:
+  lowluminance:
+
+input_number:
+  # Test Configuration
+  testled:
+    min: 0
+    max: 255
+  testled2:
+    min: 0
+    max: 255
+  testled3:
+    min: 0
+    max: 255
+
+light:
+  - platform: template
+    lights:
+      # Test Configuration
+      testled:
+        turn_on:
+          service: input_boolean.turn_on
+          entity_id: input_boolean.testled
+        turn_off:
+          service: input_boolean.turn_off
+          entity_id: input_boolean.testled
+        # set_level:
+          # service: input_number.set_level
+          # data_template:
+            # value: "{{ brightness }}"
+            # entity_id: input_number.testled
+    
+      testled2:
+        turn_on:
+          service: input_boolean.turn_on
+          entity_id: input_boolean.testled2
+        turn_off:
+          service: input_boolean.turn_off
+          entity_id: input_boolean.testled2
+        # set_level:
+          # service: input_number.set_level
+          # data_template:
+            # value: "{{ brightness }}"
+            # entity_id: input_number.testled2
+    
+      testled3:
+        turn_on:
+          service: input_boolean.turn_on
+          entity_id: input_boolean.testled3
+        turn_off:
+          service: input_boolean.turn_off
+          entity_id: input_boolean.testled3
+        # set_level:
+          # service: input_number.set_level
+          # data_template:
+            # value: "{{ brightness }}"
+            # entity_id: input_number.testled3

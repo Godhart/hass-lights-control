@@ -1,0 +1,85 @@
+switch:
+  # Description of the service
+  description: Process switch event i.e. button click, flick of the switch etc.
+  # Different fields that your service accepts
+  fields:
+    # Key of the field
+    name:
+      description: string (required) The name of switch
+    value:
+      description: any (required) Switch's event name that just happened
+
+switch_template:
+  # Description of the service
+  description: Process switch event i.e. button click, flick of the switch etc.
+  # Different fields that your service accepts
+  fields:
+    # Key of the field
+    name_template:
+      description: template (required) Switch's name from template. String expected
+    value_template:
+      description: template (required) Switch's event name that just happened from a template
+
+sensor:
+  # Description of the service
+  description: Process sensor's value change
+  # Different fields that your service accepts
+  fields:
+    # Key of the field
+    name:
+      description: string (required) The name of sensor
+    value:
+      description: any (required) Sensor's value
+
+sensor_template:
+  # Description of the service
+  description: Process sensor's value change
+  # Different fields that your service accepts
+  fields:
+    # Key of the field
+    name_template:
+      description: template (required) Switch's name from template. String expected
+    value_template:
+      description: template (required) Sensor's value from a template
+
+on_light_change:
+  # Description of the service
+  description: Make lights control to react on light's state change
+  # Different fields that your service accepts
+  fields:
+    # Key of the field
+    name:
+      description: string (required) The name of light. May be replaced with name_template
+    value:
+      description: any (required) Light state. May be replaced with name_template
+
+on_light_change_template:
+  # Description of the service
+  description: Make lights control to react on light's state change. String expected
+  # Different fields that your service accepts
+  fields:
+    # Key of the field
+    name_template:
+      description: template (required) Lights's name from template
+    value_template:
+      description: template (required) Light state from a template
+
+watchdog:
+  # Description of the service
+  description: Updates lights states according to on/off schedule
+  fields: {}
+
+reload_groups:
+  # Description of the service
+  description: Reloads groups informations
+  fields: {}
+
+reload_groups:
+  # Description of the service
+  description: Restarts lights control component from the scratch - parses config, loads groups etc.
+  fields: {}
+
+dump:
+  # Description of the service
+  description: Dumps parsed lights control config and context into log
+  fields: {}

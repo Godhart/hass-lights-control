@@ -1,0 +1,54 @@
+switch_map:
+  testled_2:
+    - {switch: "testledswitch1", event: "single"}
+    - {switch: "testledswitch2", event: ["single", "double"]}
+    - {switch: "testledswitch3", event: ["double"], switch_off: 2}
+  TestGroup:
+    - {switch: "testgroupswitch1", event: "single", switch_off: 3, lights_on: ["testled2", "testled3"]}
+    - {switch: "testgroupswitch1", event: "double", switch_off: 4, lights_on: ["testled2"], lights_off: ["testled3"]}
+    - {switch: "testgroupswitch1", event: "both", lights_on: [], lights_off: ["testled2", "testled3"]}
+
+sensor_map:
+  testled_2:
+    - {sensor: "occupancytestsensor1"}
+    - {sensor: "occupancytestsensor2", value: 'on',  when: ["10:00:00", "11:59:59"]}
+    - {sensor: "occupancytestsensor3", value: 'on',  when: [["14:00:00", "15:59:59"], ["18:00:00", "19:59:59"]] }
+    - {sensor: "occupancytestsensor4", value: 'on',  when: ["00:00:00", "23:59:59"], siwtch_off: 2}
+    - {sensor: "occupancytestsensor5", value: 'off', when: ["00:00:00", "02:00:00"], switch_off: 3, auto: yes}
+  TestGroup:
+    - {sensor: "occupancytestsensorg", value: 'on', lights_on: ["testled2", "testled3"]}
+
+sensor_default_switch_off: 4
+power_save:
+  test_led_power_save_1: {timeout: 19, when: ["23:00:00", "01:59:59"], lights: ["testled_2"]}
+  test_led_power_save_2: {timeout: 9, when: [["02:00:00", "06:00:00"], ["19:00:00", "22:59:59"]], lights: ["testled_2"]}
+  test_led_power_save_3: {timeout: 6, when: ["10:00:00", "16:59:59"], lights: ["testled2", "testled3"]}
+
+on_state:  # Specified state would be applied to lights in ON state
+  testled_2:
+    - {when: ["10:00:00", "12:59:59"], state: 55}
+    - {when: [["07:00:00", "09:59:59"], ["13:00:00", "15:59:59"]], state: 155}
+    - {status: "occupancytestsensor1", value: 'on', state: 233}
+
+  TestGroup:
+    - {when: ["10:00:00", "12:59:59"], state: 66, lights: ["testled2", "testled3"]}
+    - {when: [["07:00:00", "09:59:59"], ["13:00:00", "15:59:59"]], state: 166, lights: ["testled2", "testled3"]}
+
+
+off_state:  # Specified state would be applied to lights in ON state
+  testled_2:
+    - {when: ["07:30:00", "15:29:59"], state: 44}
+    - {when: [["02:00:00", "07:29:59"], ["13:00:00", "15:59:59"]], state: 144}
+    - {status: "lowluminance", value: 'on', state: 33}
+
+  TestGroup:
+    - {when: ["10:00:00", "12:59:59"], state: 22, lights: ["testled2", "testled3"]}
+    - {when: [["07:00:00", "09:59:59"], ["13:00:00", "15:59:59"]], state: 122, lights: ["testled2", "testled3"]}
+
+notify_turn_off:
+  TestLedNotify:   {kind: "flash", before: 60, lights: "testled_2", args: [9, 6]}
+  TestGroupNotify: {kind: "dim",   before: 60, lights: ["testled2", "testled3"], args: {brightness: 0.5, minimum: 50}}
+
+automation_map:
+  TestLedAutomation: "testled_2"
+  TestGroupAutomation: ["testled2", "testled3"]
