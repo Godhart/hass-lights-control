@@ -2,15 +2,17 @@ import sys
 import os
 import subprocess
 
-if len(sys.argv) > 2:
-    config = sys.argv[2]
+if len(sys.argv) > 1:
+    config = sys.argv[1]
 else:
     config = os.path.join("..", "example_config", "lights_control.yaml")
 
-if len(sys.argv) > 3:
-    output_dir = sys.argv[3]
+if len(sys.argv) > 2:
+    output_dir = sys.argv[2]
 else:
     output_dir = ".check_run_output"
+
+# NOTE: sys.argv[3] selects certain test
 
 if output_dir != ".":
     if not os.path.exists(output_dir):
@@ -28,7 +30,7 @@ else:
 args = [
     # 10 minutes watchdog:
     [config, state_output, "{scenario: watchdog, name: _none_, value: _none_}",
-     "15:29:59", "1", "10"],
+     "23:29:59", "1", "10"],
     # 24-hout watchdog:
     [config, state_output, "{scenario: watchdog, name: _none_, value: _none_}",
      "15:29:59", "24", "60"],
@@ -70,8 +72,8 @@ args = [
      "23:00:00", "48", "31"]
 ]
 
-if len(sys.argv) > 1:
-    ops = range(int(sys.argv[1])-1, int(sys.argv[1]))
+if len(sys.argv) > 3:
+    ops = range(int(sys.argv[3])-1, int(sys.argv[3]))
 else:
     ops = range(0, len(args))
 
