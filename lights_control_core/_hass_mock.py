@@ -162,8 +162,10 @@ class Hass(object):
         for sensor in sensors:
             if '.' not in sensor:
                 sensor = 'sensor.'+sensor
+            if sensor in self._state:   # State could be simultaneously light and sensor
+                continue
             self._state[sensor] = {
-                'state': [STATE_OFF, 0][sensors[sensor] != STATE_ON],
+                'state': [STATE_OFF, 0][sensors[sensor] != STATE_OFF],
                 'attributes': {},
                 'last_changed': "00:00:00"}
 
