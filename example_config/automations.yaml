@@ -9,12 +9,12 @@
 - alias: 'TestLedAutomation'
   trigger:
     platform: time_pattern
-    minutes: "/6000" # Every 100 Hours
+    minutes: "/60000" # Every 1000 Hours
   action:
     - service: lights_control.watchdog
 - alias: 'TestGroupAutomation'
   trigger:
     platform: time_pattern
-    minutes: "/6000" # Every 100 Hours
+    minutes: "/60001" # Every 1000 Hours
   action:
     - service: lights_control.watchdog
