@@ -48,7 +48,7 @@ class Service(object):
 
     def call(self, domain, service, service_data, wait):
         assert wait is True, "Forgot to set wait to True"
-        assert domain in ('variable', 'light'), "It's just a mock! Only few calls for variable and light are supported"
+        assert domain in ('variable', 'light', 'switch'), "It's just a mock! Only few calls for variable and light are supported"
         if domain == 'variable':
             if service == 'set_variable_data':
                 self._set_state('variable.', service_data['variable'], service_data['value'])
@@ -66,6 +66,16 @@ class Service(object):
                 print("HassMock: Light {} were turned ON".format(service_data['entity_id'])
                       + ["", " to brightness {}".format(
                              service_data.get('brightness', 255))]['brightness' in service_data]
+                      + " at {}".format(self._host.time_now()))
+            else:
+                raise ValueError("Wrong domain.service: {}.{}".format(domain, service))
+        elif domain == 'switch':
+            if service == 'turn_off':
+                self._set_state('switch.', service_data['entity_id'], STATE_OFF)
+                print("HassMock: Switch {} were turned OFF at {}".format(service_data['entity_id'], self._host.time_now()))
+            elif service == 'turn_on':
+                self._set_state('switch.', service_data['entity_id'], STATE_ON, attributes=None)
+                print("HassMock: Switch {} were turned ON".format(service_data['entity_id'])
                       + " at {}".format(self._host.time_now()))
             else:
                 raise ValueError("Wrong domain.service: {}.{}".format(domain, service))
