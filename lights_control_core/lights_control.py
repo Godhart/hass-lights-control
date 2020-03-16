@@ -1023,7 +1023,7 @@ class LightsControl(object):
         """ Returns True if state is not STATE_OFF and is not same as off_state"""
         return state['state'] != STATE_OFF and \
                state['state'] != off_state['state'] and \
-               state['attributes'].get('brightness', 255) != off_state['brightness']
+               ('brightness' not in off_state or state['brightness'] != off_state['brightness'])
 
     def _light_is_on(self, light, time_now):
         """ Returns True if light is on it it's state (brightness) is not same as off_state"""
@@ -1132,8 +1132,11 @@ class LightsControl(object):
     @staticmethod
     def _value_is_within_range(value, activating_value):
         if isinstance(activating_value, (list, tuple)):
-            if activating_value[0] <= value <= activating_value[1]:
-                return True
+            try:
+                if activating_value[0] <= value <= activating_value[1]:
+                    return True
+            except TypeError:
+                return False
         else:
             if value == activating_value:
                 return True
