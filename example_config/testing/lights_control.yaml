@@ -1,12 +1,12 @@
 switch_map:
   testled_2:
-    - {switch: "testledswitch1", event: "single"}
-    - {switch: "testledswitch2", event: ["single", "double"]}
-    - {switch: "testledswitch3", event: ["double"], switch_off: 2}
+    - {button: "testled_button1", event: "single"}
+    - {button: "testled_button2", event: ["single", "double"]}
+    - {button: "testled_button3", event: ["double"], switch_off: 2}
   TestGroup:
-    - {switch: "testgroupswitch1", event: "single", switch_off: 3, lights_on: ["testled2", "testled3"]}
-    - {switch: "testgroupswitch1", event: "double", switch_off: 4, lights_on: ["testled2"], lights_off: ["testled3"]}
-    - {switch: "testgroupswitch1", event: "both", lights_on: [], lights_off: ["testled2", "testled3"]}
+    - {button: "testgroup_button1", event: "single", switch_off: 3, lights_on: ["testled2", "testled3"]}
+    - {button: "testgroup_button1", event: "double", switch_off: 4, lights_on: ["testled2"], lights_off: ["testled3"]}
+    - {button: "testgroup_button1", event: "both", lights_on: [], lights_off: ["testled2", "testled3"]}
 
 sensor_map:
   testled_2:

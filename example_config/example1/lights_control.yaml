@@ -31,15 +31,15 @@ lights_list:  # Just a list of lights to see them all in one place
 # Switch buttons setup
 switch_map:
   test_led:
-    - {switch: TestButton, event: single, switch_off: 5}
-    - {switch: TestButton, event: double, switch_off: 3, magic: yes}
+    - {button: TestButton, event: single, switch_off: 5}
+    - {button: TestButton, event: double, switch_off: 3, magic: yes}
 
   # all_lights:   # Turn off all lights with just single switch button
-  #  - {switch: Corrdior, event: both_double, lights_on: [], lights_off:[group.lights_all]}
+  #  - {button: Corrdior, event: both_double, lights_on: [], lights_off:[group.lights_all]}
 
-  bedroom_main:      [{switch: Bedroom, event: left}]
-  bedroom_contour:   [{switch: Bedroom, event: right}]
-  befroom_all:       [{switch: Bedroom, event: both, lights_on: [bedroom_main, bedroom_contour]}]
+  bedroom_main:      [{button: Bedroom, event: left}]
+  bedroom_contour:   [{button: Bedroom, event: right}]
+  befroom_all:       [{button: Bedroom, event: both, lights_on: [bedroom_main, bedroom_contour]}]
   # NOTE: separate rule is required to turn ON/OFF bedroom_main and bedroom_contour lights simultaneously
   # otherwise (if set bedroom_main events to [left, both] and bedroom_contour events to [right, both]
   # bedroom_main and bedroom_contour lights may toggle ON/OFF out of phase by 'both' event
@@ -47,48 +47,48 @@ switch_map:
   # would toggle bedroom_main to OFF and bedroom_contour to ON
   # To avoid this separate rule like this is required
 
-  guestroom_main:    [{switch: Guestroom, event: left}]
-  guestroom_back:    [{switch: Guestroom, event: right}]
-  guestasdfroom_all: [{switch: Guestroom, event: both, lights_on: [bedroom_main, bedroom_contour]}]
+  guestroom_main:    [{button: Guestroom, event: left}]
+  guestroom_back:    [{button: Guestroom, event: right}]
+  guestasdfroom_all: [{button: Guestroom, event: both, lights_on: [bedroom_main, bedroom_contour]}]
 
-  kid1_center: [{switch: Kid1, event: left}]
-  kid1_rail:   [{switch: Kid1, event: right}]
-  kid1_all:    [{switch: Kid1, event: both, lights_on: [kid1_center, kid1_rail]}]
+  kid1_center: [{button: Kid1, event: left}]
+  kid1_rail:   [{button: Kid1, event: right}]
+  kid1_all:    [{button: Kid1, event: both, lights_on: [kid1_center, kid1_rail]}]
 
-  kid2_sun:   [{switch: Kid2, event: left}]
-  kid2_rail:  [{switch: Kid2, event: right}]
-  kid2_all:   [{switch: Kid1, event: both, lights_on: [kid1_center, kid1_rail]}]
+  kid2_sun:   [{button: Kid2, event: left}]
+  kid2_rail:  [{button: Kid2, event: right}]
+  kid2_all:   [{button: Kid1, event: both, lights_on: [kid1_center, kid1_rail]}]
 
   corridor_left:
-    - {switch: Corrdior, event: right, lights_on: [corridor_left, corridor_center], lights_off: corridor_left}
+    - {button: Corrdior, event: right, lights_on: [corridor_left, corridor_center], lights_off: corridor_left}
       # Switch button above also turns ON Center corridor section
-    - {switch: Kitchen1, event: left_double}
+    - {button: Kitchen1, event: left_double}
   corridor_right:
-    - {switch: Corrdior, event: left, lights_on: [corridor_right, corridor_center], lights_off: corridor_right}
+    - {button: Corrdior, event: left, lights_on: [corridor_right, corridor_center], lights_off: corridor_right}
       # Switch button above also also turns ON Center corridor section
-    - {switch: Kitchen2, event: right_double}
+    - {button: Kitchen2, event: right_double}
   corridor_center:
-    - {switch: Corrdior, event: both}
+    - {button: Corrdior, event: both}
 
   kitchen:
-    - {switch: Kitchen1, event: right, lights_on: [kitchen_cook, kitchen_table]}
-    - {switch: Kitchen2, event: right, lights_on: [kitchen_cook, kitchen_table]}
+    - {button: Kitchen1, event: right, lights_on: [kitchen_cook, kitchen_table]}
+    - {button: Kitchen2, event: right, lights_on: [kitchen_cook, kitchen_table]}
   cabinet:
-    - {switch: Kitchen1, event: left}
-    - {switch: Kitchen2, event: left}
+    - {button: Kitchen1, event: left}
+    - {button: Kitchen2, event: left}
   kitchen_cabinet:
-    - {switch: Kitchen1, event: double, lights_on: [kitchen_cook, kitchen_table, cabinet]}
-    - {switch: Kitchen2, event: double, lights_on: [kitchen_cook, kitchen_table, cabinet]}
+    - {button: Kitchen1, event: double, lights_on: [kitchen_cook, kitchen_table, cabinet]}
+    - {button: Kitchen2, event: double, lights_on: [kitchen_cook, kitchen_table, cabinet]}
 
   bathroom:
-    - {switch: Bathroom, event: single, switch_off: 15}
-    - {switch: Bathroom, event: double, switch_off: 60}
+    - {button: Bathroom, event: single, switch_off: 15}
+    - {button: Bathroom, event: double, switch_off: 60}
   shower:
-    - {switch: Shower, event: single, switch_off: 15}
-    - {switch: Shower, event: double, switch_off: 60}
+    - {button: Shower, event: single, switch_off: 15}
+    - {button: Shower, event: double, switch_off: 60}
 
-  laundry:     [{switch: Corridor, event: right_double, switch_off: 5}]
-  cloack_room: [{switch: Corridor, event: left_double, switch_off: 5}]
+  laundry:     [{button: Corridor, event: right_double, switch_off: 5}]
+  cloack_room: [{button: Corridor, event: left_double, switch_off: 5}]
 
 ###########################################################################################
 # Sensors and states automation

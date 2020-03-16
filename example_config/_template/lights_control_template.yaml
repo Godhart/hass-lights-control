@@ -1,19 +1,20 @@
 switch_map:
-  <map_record_name>:      # Contains list with switch action definitions
+  <map_record_name>:      # Contains list with switch button actions definitions
     # Keyworded entry (aka dictionary)
-    - switch: <switch_name>
+    - button: <button_name>
       event: <click_event>
       switch_off: <switch_off_time> (optional)
       lights_on: <on_group> (optional)
       lights_off: <off_group> (optional)
     # Positional entry (aka list, required to be turned on specially)
-    - [<switch_name>, <click_event>, <switch_off_time> (optional), <on_group> (optional), <off_group> (optional)]
+    - [<button_name>, <click_event>, <switch_off_time> (optional), <on_group> (optional), <off_group> (optional)]
     # Mandatory fields:
     #   map_record_name:   a name to distinguish record. Also is used as default value for entity name in on/off_group
-    #   switch_name:       name of switch that triggers action. Not necessary to be a real HASS entity name, but still
-    #                      it's recommended to use real switch entity name associated with this action to ease automation.
-    #   click_event:       name of event that triggers action or list of such events. Not necessary to be a real switch
-    #                      event name but still it's recommended to use real switch event name associated with this
+    #   button_name:       name of switch button that triggers action. Not necessary to be a real HASS entity name, but
+    #                      still it's recommended to use real switch button entity name associated with this action
+    #                      to ease automation.
+    #   click_event:       name of button's event that triggers action or list of such events. Not necessary to be
+    #                      a real event name but still it's recommended to use real event name associated with this
     #                      action to ease automation.
     # Optional fields:
     #   switch_off_time:   switch off time in minutes for this action - integer in range from -1 and toward infinity.
@@ -21,9 +22,9 @@ switch_map:
     #                      0:  keeps switch off schedule
     #                      >0:  extends switch off schedule if current_time + switch_off_time greater than current schedule
     #   on_group:          a list of entities to turn ON,  for example [light.A, light.B].
-    #                      If empty list is specified (not omitted) then switch only turns lights off
+    #                      If empty list is specified (not omitted) then switch button only turns lights off
     #   off_group:         a list of entities to turn OFF, for example [light.A, light.B]
-    #                      If empty list is specified (not omitted) then switch only turns lights on
+    #                      If empty list is specified (not omitted) then switch button only turns lights on
 
     # Defaults:
     #   switch_off_time:   -1
@@ -31,7 +32,7 @@ switch_map:
     #   off_group:         off_group by default would be same as on_group
 
     # Automatic names completions:
-    #   if switch_name don't contains '.' then prefix 'switch.' would be appended
+    #   if button_name don't contains '.' then prefix 'button.' would be appended
     #   if entity name in on_group or off_group don't contains '.' then prefix 'light.' would be appended
 
 sensor_map:
@@ -97,7 +98,7 @@ power_save:
     #   rule_name:         a name to distinguish record. Also is used as default value for entity name in lights field
     # Optional fields:
     #   switch_off_time:   time of inactivity after which light may be turned off
-    #                      no activity means no switch actions or no triggered sensor actions
+    #                      no activity means no switch buttons actions or no triggered sensor actions
     #   active_time:       time range in which lights may be turned off for power savings
     #                      Should be specified as single list with start/end time in format ["HH:MM:SS", "HH:MM:SS"]
     #                      or list of such lists like: [  ["HH:MM:SS", "HH:MM:SS"], ["HH:MM:SS", "HH:MM:SS"] ]

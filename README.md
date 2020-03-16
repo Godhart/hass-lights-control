@@ -7,22 +7,17 @@ A component for HASS (Home Assistant) providing general lights control automatio
 Since all business logic is buried within component all that is left is to provide simple rules description 
 for your lights, switches and sensors and customize behaviour as necessary.
 
-> NOTE1: As I almost done with document I just had found that 'switch' is ambiguous word.
-In this document 'switch' is referencing to something that triggers action like button etc.
-And it's not about switch that is toggled with HASS automations like relay etc. Take my excuses about that
-but it's hard to change things right now.
-
-> NOTE2: You can try to use component with other automation systems besides HASS as it' lightly depends on it.
+> NOTE: You can try to use component with other automation systems besides HASS as it' lightly depends on it.
 See 'Using with other automation systems' section.
 
 ## Features
 
-* Short and simple automation description for environments with high amount of lights/switches/sensors
-* Switches, Sensors, HASS states and other automations can be used to control lights
+* Short and simple automation description for environments with high amount of lights/switch buttons/sensors
+* Switch buttons, Sensors, HASS states and other automations can be used to control lights
 * Scheduled PowerSaving allows use different automatic turn-off scenarios
 * Scheduled on/off states and light's brightness change provides comfortable lighting and nightlights
 * Per light automation control - toggle off sensor based actions, automatic power savings and brightness change 
-  but keep switch related actions
+  but keep switch buttons related actions
 
 ## Details
 
@@ -34,7 +29,7 @@ See 'Using with other automation systems' section.
 It's assumed that you have some sort of following infrastructure, attached to your Home Assistance:
 
 * Lights
-* Switches (optionally)
+* Switch buttons (optionally)
 * Sensors  (optionally)
 
 ### General Idea
@@ -50,7 +45,7 @@ LightsControl's first task is to ensure that light's are turned on or off accord
 specified. So as time passes it would rise or lower brightness according to schedule and depending
 on light' state - ON state or OFF state.
 
-When you toggle lights with switch or sensor by default it would be toggled between ON and OFF state.
+When you toggle lights with button or sensor by default it would be toggled between ON and OFF state.
 
 > TODO: Pictures for illustrating
 
@@ -69,7 +64,7 @@ use them as nightlights.
 
 Sometimes it's necessary to turn lights to max brightness, fade them out or totally power off.
 
-Special switches action (double clicks when described in certain manner) or
+Special switches button events (so called 'magic' events) or
 lights control from GUI or by any other means bypassing LightsControl object, may set them to 
 CUSTOM or BLACKOUT state depending on current ON/OFF state.
 
@@ -78,32 +73,33 @@ would use only power saving logic to toggle into OFF state in case if lights wer
 
 ### Lights toggling
 
-That section describes main logic that toggles light's state. Lights are toggled by switches and sensors. 
+That section describes main logic that toggles light's state. Lights are toggled by switch buttons and sensors.
 Due to different nature of those two sources logic behinds is also different.
 
-#### Switches
+#### Switch buttons
 
-Switch action is treated as explicit intent and it's always toggles light between ON/OFF/CUSTOM/BLACKOUT states.
+Switch button action is treated as explicit intent and it's always toggles light between ON/OFF/CUSTOM/BLACKOUT states.
 
-By default switch action toggles light between ON/OFF state and CUSTOM/BLACKOUT states are used only under certain 
+By default switch button action toggles light between ON/OFF state and CUSTOM/BLACKOUT states are used only under certain 
 circumstances.
 
-'Special double click' events are used to toggle light into CUSTOM or BLACKOUT state. Which state would be toggled
+`Magic` events are used to toggle light into CUSTOM or BLACKOUT state. Which state would be toggled
 depends on ON/OFF state:
-* if OFF state is 'off' then light would be toggled between CUSTOM(MAX brightness) and ON state (CUSTOM first)
-* if OFF state is 'on' then light would be toggled between CUSTOM(MAX brightness) and BLACKOUT (CUSTOM first)
+* if OFF state is `off` then light would be toggled between CUSTOM(MAX brightness) and ON state (CUSTOM first)
+* if OFF state is `on` then light would be toggled between CUSTOM(MAX brightness) and BLACKOUT (CUSTOM first)
 
-Any event besides 'special double click' would toggle lights back into ON/OFF state (ON after BLACKOUT, OFF after CUSTOM)
+Any event besides `magic` would toggle lights back into ON/OFF state (ON after BLACKOUT, OFF after CUSTOM)
 
-Switch would toggle lights ON for undefined or for constrained period of time depending on configuration.
+Switch button action would toggle lights ON for undefined or for constrained period of time depending on configuration.
 For more information check Power savings section.
 
-Switch action description allows toggle few lights at once without need to put them into group but groups are also supported.
+Switch button action allows toggle few lights at once without need to put them into group but groups are also supported.
 You can even separate lights list that are toggled ON from lights that are toggled OFF. And even more - you can toggle 
-lights only ON or only OFF with switch action (which comes in handy when you need to turn OFF all lights at once).
+lights only ON or only OFF with switch button action (which comes in handy when you need to turn OFF all lights at once
+with some special button event).
 
-> NOTE: It's not necessary that switch action is initiated by real switch. Actually you can trigger switch action simply 
-by calling LightsControl's 'switch' method and specifying switch_name and switch_event that are already in your 
+> NOTE: It's not necessary that switch action is initiated by real switch button. Actually you can trigger switch action
+simply by calling LightsControl's `switch` method and specifying switch_name and switch_event that are already in your 
 configuration.
 
 #### Sensors
@@ -113,31 +109,32 @@ Sensors actions are treated as implicit intent so they are only used to to toggl
 By default lights are toggled ON only for constrained period of time. For more information check Power savings section.
 
 Sensor values are checked and appropriate actions are taken by LightsControl in case if:
-* You set trigger in automation for case when sensor's value becomes active and calling 'sensor' method of LightsControl
+* You set trigger in automation for case when sensor's value becomes active and calling `sensor` method of LightsControl
 to take actions immediately
 * Sensor is set as Triggerles so LightsControl would check it's state periodically (default period is 5 secs) 
 and turn lights ON if sensor state treated as active
-* State of any sensor that is mentioned in configuration would be checked before switching lights off automatically 
-(lights won't be switched off until sensor's value becomes inactive). Even if sensor is without automation and not used
-in triggerles configuration
+* State of any sensor that is mentioned in configuration would be checked before switching lights off automatically.
+Lights won't be switched off until all sensors' values becomes inactive. Even if sensor is without automation and not 
+used in triggerles configuration
 
 #### Light/Switch Proxy
 
-LightsControl also supports methods 'turn_on'/'turn_off'/'toggle' that are supported by light and switch entities, so 
+LightsControl also supports methods `turn_on`/`turn_off`/`toggle` that are supported by `light` and `switch` entities, so 
 existing lights automations can be adopted easily.
 
 #### Integration with other Components
 
 If you have other lights automations besides LightsControl, it's better to avoid controlling lights directly since
-that could switch lights into CUSTOM/BLACKOUT state. So you better use LightsControl as proxy for lights toggling. 
+that could switch lights into CUSTOM/BLACKOUT state and break some automation. 
+So you better use LightsControl as proxy for lights toggling. 
 
-Call LightsControl 'switch'/'turn_on'/'turn_off'/'toggle'/ action to toggle lights. 
-When calling 'switch' you can use existing switch_name and switch_event OR define 
+Call LightsControl `switch`/`turn_on`/`turn_off`/`toggle` action to toggle lights. 
+When calling `switch` method you can use existing switch_name and switch_event OR define 
 new switch_name and switch_event in LightsControl configuration (anything that comes to your mind) and use it instead.
 
-Basically any HASS state can be used as additional sensor. But don't forget to include that state into LightsControl
+Basically any HASS state can be used as sensor. But don't forget to include that state into LightsControl
 configuration as sensor, otherwise it wouldn't have effect.
-Also don't forget to write automation for calling LightsControl 'sensor' when state becomes active or use 
+Also don't forget to write automation for calling LightsControl `sensor` when state becomes active or use 
 Triggerles_Sensor configuration.
 
 ### Power Savings
@@ -150,7 +147,7 @@ There is two types of power savings:
 
 #### Automatic Switch Off after Switch On
 
-For switch/turn_on/toggle and sensor action you can define switch off timeout.
+For `switch`/`turn_on`/`toggle` and `sensor` action you can define `switch off` timeout.
 
 Switch off timeout schedules time when light should be turned off after it was switched on.
 Switch off timeout is planned when lights are toggled into ON or CUSTOM state and is cleared when lights toggled 
@@ -167,22 +164,23 @@ There is 5 scenarios scenarios depending on current action switch off timeout an
 
 In other words: switch off time can be cleared, left untouched, or extended by actions.
 
-By default switch off timeout for switch/turn_on/toggle actions is -1 so by default they clears scheduled switchoff.
+By default switch off timeout for `switch`/`turn_on`/`toggle` actions is `-1` so by default they clears scheduled 
+switch off.
 
-Default switch off timeout for sensor action is 5 minutes.
+Default switch off timeout for `sensor` action is `5` minutes.
 
 Actual switching off would be delayed until all sensors associated with light become inactive.
 
 
 #### General Power Savings
 
-It' obvious that during some time usually there is no need in lighting - like day times, times you away, times you asleep.
+It's obvious that during some time usually there is no need in lighting - like day times, times you away, times you asleep.
 And if lights were turned ON during this period of time it's low probability they they were turned ON for long time.
 
 So you can define power savings schedule to turn off lights automatically if they are turned on for long time.
 
 In a schedule you specify period of time, list of lights, time since last turn on action before switching off. 
-Last action is any action with light that turns lights on like sensor trigger, flick of switch, turn on via GUI and so on.
+Last action is any action with light that turns lights on like sensor trigger, switch button, turn on via GUI and so on.
 
 Automatic minor actions by LightsControl like brightness change, turn off notifications are not taken into account.
 
@@ -207,8 +205,9 @@ You can set time before turn off to notify you and notification manner. Right no
 If it's time for automatic switch off but notification is configured for that light then
 LightsControl performs notification action before switching lights off so you may notice it.
 
-After notification were made and before lights would be turned off any switch's click event for this light or 
-sensor trigger will toggle lights back into on state. Next switch off time would depend on event's switch off timeout. 
+After notification were made and before lights would be turned off any switch button's event for this light 
+(except those with empty 'lights_on' list )or sensor trigger will toggle lights back into ON state. 
+Next switch off time would depend on event's switch off timeout. 
 
 > NOTE: if you have bi-stable switches with on/off state, not click switches, then switch flicking (ON->OFF->ON) 
 would make lights flash as you do that if you don't set inertial delay for switch OFF state automation
@@ -221,29 +220,30 @@ This section describes how to configure LightsControl and HASS automations for y
 
 LightsControl have following configuration sections:
 
-#### Switch configuration
+#### Switch buttons configuration
 
-Switch actions are configured with Switch map.
-Switch map is a dictionary. Every dictionary record contains list with switch action definitions.
+Switch buttons actions are configured with Switch map.
+Switch map is a dictionary. Every dictionary record contains list with switch button action definitions.
 
 Switch map format:
 ```yaml
 switch_map:
-  <map_record_name>:      # Contains list with switch action definitions
+  <map_record_name>:      # Contains list with switch button actions definitions
     # Keyworded entry (aka dictionary)
-    - switch: <switch_name>
+    - button: <button_name>
       event: <click_event>
       switch_off: <switch_off_time> (optional)
       lights_on: <on_group> (optional)
       lights_off: <off_group> (optional)
     # Positional entry (aka list, required to be turned on specially)
-    - [<switch_name>, <click_event>, <switch_off_time> (optional), <on_group> (optional), <off_group> (optional)]
+    - [<button_name>, <click_event>, <switch_off_time> (optional), <on_group> (optional), <off_group> (optional)]
     # Mandatory fields:
     #   map_record_name:   a name to distinguish record. Also is used as default value for entity name in on/off_group
-    #   switch_name:       name of switch that triggers action. Not necessary to be a real HASS entity name, but still 
-    #                      it's recommended to use real switch entity name associated with this action to ease automation.
-    #   click_event:       name of event that triggers action or list of such events. Not necessary to be a real switch 
-    #                      event name but still it's recommended to use real switch event name associated with this 
+    #   button_name:       name of switch button that triggers action. Not necessary to be a real HASS entity name, but 
+    #                      still it's recommended to use real switch button entity name associated with this action 
+    #                      to ease automation.
+    #   click_event:       name of button's event that triggers action or list of such events. Not necessary to be
+    #                      a real event name but still it's recommended to use real switch event name associated with this 
     #                      action to ease automation.
     # Optional fields:
     #   switch_off_time:   switch off time in minutes for this action - integer in range from -1 and toward infinity. 
@@ -251,9 +251,9 @@ switch_map:
     #                      0:  keeps switch off schedule
     #                      >0:  extends switch off schedule if current_time + switch_off_time greater than current schedule
     #   on_group:          a list of entities to turn ON,  for example [light.A, light.B]. 
-    #                      If empty list is specified (not omitted) then switch only turns lights off
+    #                      If empty list is specified (not omitted) then switch button only turns lights off
     #   off_group:         a list of entities to turn OFF, for example [light.A, light.B]
-    #                      If empty list is specified (not omitted) then switch only turns lights on
+    #                      If empty list is specified (not omitted) then switch button only turns lights on
     
     # Defaults:
     #   switch_off_time:   -1
@@ -261,14 +261,14 @@ switch_map:
     #   off_group:         off_group by default would be same as on_group
     
     # Automatic names completions:
-    #   if switch_name don't contains '.' then prefix 'switch.' would be appended  
+    #   if button_name don't contains '.' then prefix 'button.' would be appended  
     #   if entity name in on_group or off_group don't contains '.' then prefix 'light.' would be appended 
 ```
 
 #### Sensors configuration
 
 Sensor actions are configured with Sensor map.
-Sensor map is a dictionary. Every dictionary record contains list with switch action definitions.
+Sensor map is a dictionary. Every dictionary record contains list with sensor action definitions.
 
 Sensor map format:
 ```yaml
@@ -345,7 +345,7 @@ power_save:
     #   rule_name:         a name to distinguish record. Also is used as default value for entity name in lights field
     # Optional fields:     
     #   switch_off_time:   time of inactivity after which light may be turned off
-    #                      no activity means no switch actions or no triggered sensor actions
+    #                      no activity means no switch buttons actions or no triggered sensor actions
     #   active_time:       time range in which lights may be turned off for power savings
     #                      Should be specified as single list with start/end time in format ["HH:MM:SS", "HH:MM:SS"]
     #                      or list of such lists like: [  ["HH:MM:SS", "HH:MM:SS"], ["HH:MM:SS", "HH:MM:SS"] ]
@@ -362,7 +362,7 @@ power_save:
 
 #### On/Off state customization
 
-ON and OFF states are configured with 'on_state' and 'off_state' configuration variables accordingly.
+ON and OFF states are configured with `on_state` and `off_state` configuration variables accordingly.
 
 Format:
 ```yaml
@@ -505,7 +505,7 @@ automation_map:
 ```
 
 Now when you turn off automation for some lights LightsControl would only toggle them to ON/OFF/CUSTOM/BLACKOUT state
-by switch actions or sensor's triggers.
+by switch button actions or sensor's triggers.
 
 ### A Note about Groups
 
@@ -513,9 +513,9 @@ You can use groups as entities names in LightsControl configuration. On start Li
 list for each group you mentioned, store it and would be using stored group mapping. It's required to properly
 manage state of each light in a group.
 
-If you ever modify HASS groups and do 'hass.reload_groups', LightsControl still be using stored values.
+If you ever modify HASS groups and do `hass.reload_groups`, LightsControl still be using stored values.
 To make LightsControl use new groups definition without LightsControl restart/HASS reboot call
-'reload_groups' for LightsControl entity.
+`lights_control.reload_groups` for LightsControl entity.
 
 ## Services
 
@@ -539,8 +539,8 @@ To make LightsControl use new groups definition without LightsControl restart/HA
 
 There is no detailed description for this yet but you can try to figure it out by your self with following hints:
 
-1. Replace 'lights_control_core\_hass_helpers.py' methods so they would interact with your automation system
-2. Bind core logic to your automation system. For HASS bindings are done int '__init__.py' of this folder
+1. Replace `lights_control_core\_hass_helpers.py` methods so they would interact with your automation system
+2. Bind core logic to your automation system. For HASS bindings are done int `__init__.py` of this folder
 
 This should be enough.
 

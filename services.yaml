@@ -1,24 +1,24 @@
 switch:
   # Description of the service
-  description: Process switch event i.e. button click, flick of the switch etc.
+  description: Process switch button event i.e. button click, flick of the switch etc.
   # Different fields that your service accepts
   fields:
     # Key of the field
     name:
-      description: string (required) The name of switch
+      description: string (required) The name of button or other entity that invokes event
     value:
-      description: any (required) Switch's event name that just happened
+      description: any (required) Button's event name that just happened
 
 switch_template:
   # Description of the service
-  description: Process switch event i.e. button click, flick of the switch etc.
+  description: Process switch button event i.e. button click, flick of the switch etc.
   # Different fields that your service accepts
   fields:
     # Key of the field
     name_template:
-      description: template (required) Switch's name from template. String expected
+      description: template (required) Buttons's name from template. String expected
     value_template:
-      description: template (required) Switch's event name that just happened from a template
+      description: template (required) Buttons's event name that just happened from a template
 
 sensor:
   # Description of the service
@@ -38,7 +38,7 @@ sensor_template:
   fields:
     # Key of the field
     name_template:
-      description: template (required) Switch's name from template. String expected
+      description: template (required) Sensor's name from template. String expected
     value_template:
       description: template (required) Sensor's value from a template
 

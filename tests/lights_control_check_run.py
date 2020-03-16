@@ -35,18 +35,18 @@ args = [
     [config, state_output, "{scenario: watchdog, name: _none_, value: _none_}",
      "15:29:59", "24", "60"],
 
-    # Switches for single light
-    [config, state_output, "{scenario: switch, name: switch.testledswitch1, value: single}",
+    # Switch buttons for single light
+    [config, state_output, "{scenario: switch, name: button.testled_button1, value: single}",
      "13:01:00", "3", "5"],
-    [config, state_output, "{scenario: switch, name: switch.testledswitch2, value: double}",
+    [config, state_output, "{scenario: switch, name: button.testled_button2, value: double}",
      "13:01:00", "3", "5"],
-    [config, state_output, "{scenario: switch, name: switch.testledswitch3, value: double}",
+    [config, state_output, "{scenario: switch, name: button.testled_button3, value: double}",
      "13:01:00", "3", "5"],
 
-    # Switches for list of lights
-    [config, state_output, "{scenario: switch, name: switch.testgroupswitch1, value: single}",
+    # Switch buttons for list of lights
+    [config, state_output, "{scenario: switch, name: button.testgroup_button1, value: single}",
      "13:01:00", "3", "5"],
-    [config, state_output, "{scenario: switch, name: switch.testgroupswitch1, value: double}",
+    [config, state_output, "{scenario: switch, name: button.testgroup_button1, value: double}",
      "13:01:00", "3", "5"],
 
     # Sensors for single light

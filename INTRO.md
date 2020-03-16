@@ -20,7 +20,7 @@ to make it work. As I now understand more about templating I think that could pr
 though.
 
 In the end I got configuration that works but hard to support. Besides I hadn't found easy way for describing some 
-automations that is more than just toggling lights by switch or sensor like notification before automatic turn-off,
+automations that is more than just toggling lights by button or sensor like notification before automatic turn-off,
 time based power savings, dynamic lighting. 
 
 I had described notification actions for few important places but when I wanted to apply those rules to other lights 

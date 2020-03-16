@@ -484,7 +484,7 @@ class LightsControlConfig(object):
 
     def _parse_switch_config(self, rules_map):
         self.switch_map = {}
-        self.switch_map = self._parse_rules_map(rules_map, 'switch map', 'switch', self._parse_switch_routine,
+        self.switch_map = self._parse_rules_map(rules_map, 'switch map', 'button', self._parse_switch_routine,
                                                 list_allowed=True)
 
     def _parse_sensor_config(self, rules_map):
@@ -548,7 +548,7 @@ class LightsControlConfig(object):
         self.sensor_timeout = config
 
     def _parse_switch_routine(self, rule, *args, **kwargs):
-        template = (('switch',     None, str, 'switch.'),
+        template = (('button',     None, str, 'button.'),
                     ('event',      None, (str, list), None, list),
                     ('switch_off', -1,   int),
                     ('lights_on',  [rule], (str, list, tuple), 'light.', list),
@@ -581,7 +581,7 @@ class LightsControlConfig(object):
         try:
             self._update_entities(data['lights_on'], 'light')
             self._update_entities(data['lights_off'], 'light')
-            self._update_entities([data['switch']], 'switch')
+            self._update_entities([data['button']], 'button')
         except Exception as e:
             self._error("LightsControl: Failed to parse switch map rule '{}' due to exception: {}".format(
                 rule, e))
@@ -1281,7 +1281,7 @@ class LightsControl(object):
         seconds_now = self._time_to_seconds(time_now)
 
         switch_name, switch_events, switch_off, on_group, off_group, magic_switch = \
-            routine['switch'], routine['event'], routine['switch_off'], \
+            routine['button'], routine['event'], routine['switch_off'], \
             routine['lights_on'], routine['lights_off'], routine['magic']
 
         if len(on_group) == 0:
