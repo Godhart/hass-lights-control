@@ -628,7 +628,7 @@ class LightsControlConfig(object):
                       ('state',        None,   (int, str)),
                       ('lights',       [rule], (str, list, tuple), 'light.', list))
 
-        template_2 = (('status',       None,   str, 'sensor.'),
+        template_2 = (('sensor',       None,   str, 'sensor.'),
                       ('value',        None),
                       ('state',        None,   (int, str)),
                       ('lights',       [rule], (str, list, tuple), 'light.', list))
@@ -663,8 +663,8 @@ class LightsControlConfig(object):
 
         try:
             self._update_entities(data['lights'], 'light')
-            if 'status' in data:
-                entities = data['status']
+            if 'sensor' in data:
+                entities = data['sensor']
                 if isinstance(entities, str):
                     entities = [entities]
                 self._update_entities(entities, 'sensor')
@@ -1153,7 +1153,7 @@ class LightsControl(object):
                                 _os['brightness'] = s['state']
                         break
                 else:
-                    value = value_get(self._h, s['status'])
+                    value = value_get(self._h, s['sensor'])
                     if value is not None and self._value_is_within_range(value, s['value']):
                         if isinstance(s['state'], str) and s['state'] not in (STATE_ON, STATE_OFF):
                             s['state'] = value_get(self._h, s['state'], STATE_OFF)
@@ -1187,7 +1187,7 @@ class LightsControl(object):
                             _os = {'state': STATE_OFF}
                         break
                 else:
-                    value = value_get(self._h, s['status'])
+                    value = value_get(self._h, s['sensor'])
                     if value is not None and self._value_is_within_range(value, s['value']):
                         if isinstance(s['state'], str) and s['state'] not in (STATE_ON, STATE_OFF):
                             s['state'] = value_get(self._h, s['state'], STATE_ON)
