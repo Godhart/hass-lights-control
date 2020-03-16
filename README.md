@@ -374,7 +374,7 @@ on_state:  # Specified state would be applied to lights in ON state
       state: <light_state>
       lights: <lights_list> (optional)
     # State based ON/OFF states
-    - status: <hass_state_name>
+    - sensor: <hass_state_name>
       value: <active_value>
       state: <light_state>
       lights: <lights_list> (optional)
