@@ -28,7 +28,7 @@ on_state:  # Specified state would be applied to lights in ON state
   testled_2:
     - {when: ["10:00:00", "12:59:59"], state: 55}
     - {when: [["07:00:00", "09:59:59"], ["13:00:00", "15:59:59"]], state: 155}
-    - {status: "occupancytestsensor1", value: 'on', state: 233}
+    - {sensor: "occupancytestsensor1", value: 'on', state: 233}
 
   TestGroup:
     - {when: ["10:00:00", "12:59:59"], state: 66, lights: ["testled2", "testled3"]}
@@ -39,7 +39,7 @@ off_state:  # Specified state would be applied to lights in ON state
   testled_2:
     - {when: ["07:30:00", "15:29:59"], state: 44}
     - {when: [["02:00:00", "07:29:59"], ["13:00:00", "15:59:59"]], state: 144}
-    - {status: "lowluminance", value: 'on', state: 33}
+    - {sensor: "lowluminance", value: 'on', state: 33}
 
   TestGroup:
     - {when: ["10:00:00", "12:59:59"], state: 22, lights: ["testled2", "testled3"]}
