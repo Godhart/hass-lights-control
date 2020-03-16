@@ -290,6 +290,12 @@ class LightsControlConfig(object):
                 new_value = [new_value]
             return new_value
 
+    def _entity_is_kind_of(self, entity, kind):
+        for group_kind in self._entities[entity]['kind'].values():
+            if kind in group_kind:
+                return True
+        return False
+
     def _update_entities(self, entities_list, kind, group=None):
         """ Updates list of entities mentioned in configuration. Extrapolates all groups """
         for item in entities_list:
@@ -297,12 +303,12 @@ class LightsControlConfig(object):
                 if group is None:
                     group = "_self_"
                 if item not in self._entities:
-                    self._entities[item] = {'kind': kind, 'groups': [group]}
+                    self._entities[item] = {'kind': {group: [kind]}, 'groups': [group]}
                 else:
-                    if self._entities[item]['kind'] != kind:
-                        raise ValueError("LightsControl: entity '{}' can't be registered as '{}' and '{}'"
-                                         " at same time".format(
-                            item, kind, self._entities[item]['kind']))
+                    if group not in self._entities[item]['kind']:
+                        self._entities[item]['kind'][group] = [kind]
+                    elif kind not in self._entities[item]['kind'][group]:
+                        self._entities[item]['kind'][group].append(kind)
                     if group not in self._entities[item]['groups']:
                         self._entities[item]['groups'].append(group)
             else:
@@ -311,12 +317,10 @@ class LightsControlConfig(object):
                         item))
 
                 if item not in self._groups:
-                    self._groups[item] = {'kind': kind, 'entities': []}
+                    self._groups[item] = {'kind': [kind], 'entities': []}
                 else:
-                    if kind != self._groups[item]['kind']:
-                        raise ValueError("LightsControl: group '{}' can't be registered as '{}' and '{}'"
-                                         " at same time".format(
-                            item, kind, self._groups[item]['kind']))
+                    if kind not in self._groups[item]['kind']:
+                        self._groups[item]['kind'].append(kind)
 
     def _reload_group(self, name, entities):
         """ Updates data about group content and entity-group relations """
@@ -326,7 +330,10 @@ class LightsControlConfig(object):
             if entity not in self._entities:    # TODO: check with assert as this case shouldn't exist if all is OK
                 continue
             self._entities[entity]['groups'] = list(set([g for g in self._entities[entity]['groups'] if g != name]))
-        self._update_entities(entities, self._groups[name]['kind'], name)
+            if name in self._entities[entity]['kind']:
+                del self._entities[entity]['kind'][name]
+        for kind in self._groups[name]['kind']:
+            self._update_entities(entities, kind, name)
 
     def _get_group_entities(self, group):
         """ Get's all entities that are in specified group """
@@ -370,7 +377,7 @@ class LightsControlConfig(object):
                 continue
             if isinstance(item, (list, tuple)):
                 el += self.entities_list(kind, item, chain)
-            elif item in self._entities and self._entities[item]['kind'] == kind:
+            elif item in self._entities and self._entity_is_kind_of(item, kind):
                 el.append(item)
             elif item in self._groups:
                 el += self.entities_list(kind, self._groups[item]['entities'], chain+[item])
@@ -384,8 +391,8 @@ class LightsControlConfig(object):
     def entities_of_kind(self, kind):
         """ Returns list of all entities of specified kind"""
         result = []
-        for k, v in self._entities.items():
-            if v['kind'] == kind:
+        for k in self._entities.keys():
+            if self._entity_is_kind_of(k, kind):
                 result.append(k)
         return result
 
