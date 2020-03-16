@@ -5,7 +5,7 @@ import subprocess
 if len(sys.argv) > 1:
     config = sys.argv[1]
 else:
-    config = os.path.join("..", "example_config", "lights_control.yaml")
+    config = os.path.join("..", "example_config", "testing", "lights_control.yaml")
 
 if len(sys.argv) > 2:
     output_dir = sys.argv[2]
