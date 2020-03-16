@@ -1,0 +1,223 @@
+switch_map:
+  <map_record_name>:      # Contains list with switch action definitions
+    # Keyworded entry (aka dictionary)
+    - switch: <switch_name>
+      event: <click_event>
+      switch_off: <switch_off_time> (optional)
+      lights_on: <on_group> (optional)
+      lights_off: <off_group> (optional)
+    # Positional entry (aka list, required to be turned on specially)
+    - [<switch_name>, <click_event>, <switch_off_time> (optional), <on_group> (optional), <off_group> (optional)]
+    # Mandatory fields:
+    #   map_record_name:   a name to distinguish record. Also is used as default value for entity name in on/off_group
+    #   switch_name:       name of switch that triggers action. Not necessary to be a real HASS entity name, but still
+    #                      it's recommended to use real switch entity name associated with this action to ease automation.
+    #   click_event:       name of event that triggers action or list of such events. Not necessary to be a real switch
+    #                      event name but still it's recommended to use real switch event name associated with this
+    #                      action to ease automation.
+    # Optional fields:
+    #   switch_off_time:   switch off time in minutes for this action - integer in range from -1 and toward infinity.
+    #                      -1: clears switch off schedule
+    #                      0:  keeps switch off schedule
+    #                      >0:  extends switch off schedule if current_time + switch_off_time greater than current schedule
+    #   on_group:          a list of entities to turn ON,  for example [light.A, light.B].
+    #                      If empty list is specified (not omitted) then switch only turns lights off
+    #   off_group:         a list of entities to turn OFF, for example [light.A, light.B]
+    #                      If empty list is specified (not omitted) then switch only turns lights on
+
+    # Defaults:
+    #   switch_off_time:   -1
+    #   on_group:          map_record_name would be used as on_group by default (i.e. on = [<map_record_name>])
+    #   off_group:         off_group by default would be same as on_group
+
+    # Automatic names completions:
+    #   if switch_name don't contains '.' then prefix 'switch.' would be appended
+    #   if entity name in on_group or off_group don't contains '.' then prefix 'light.' would be appended
+
+sensor_map:
+  <map_record_name>:      # Contains list with sensor action definitions
+    # Keyworded entry (aka dictionary)
+    - sensor: <sensor_name>
+      value: <active_value> (optional)
+      when: <active_time> (optional)
+      switch_off: <switch_off_time> (optional)
+      auto: <auto_trigger> (optional)
+      lights_on: <on_group> (optional)
+    # Positional entry (aka list, required to be turned on specially)
+    - [<sensor_name>, <active_value> (optional), <active_time> (optional), <switch_off_time> (optional),
+       <auto_trigger> (optional), <on_group> (optional)]
+    # Mandatory fields:
+    #   map_record_name:   a name to distinguish record. Also is used as default value for entity name in on_group
+    #   sensor_name:       a name of sensor
+    # Optional fields:
+    #   active_value:      sensor's state value which would be treated as active
+    #                      possible active_value variants:
+    #                      * scalar value - strict comparsion would be used
+    #                      * list with two numbers - it would be checked that value falls within range between numbers
+    #                      # TODO: other variants?
+    #   active_time:       time range in which sensor should be used
+    #                      Should be specified as single list with start/end time in format ["HH:MM:SS", "HH:MM:SS"]
+    #                      or list of such lists like: [  ["HH:MM:SS", "HH:MM:SS"], ["HH:MM:SS", "HH:MM:SS"] ]
+    #   switch_off_time:   switch off time in minutes for this action - integer in range from -1 and toward infinity.
+    #                      -1: clears switch off schedule
+    #                      0:  keeps switch off schedule
+    #                      >0:  extends switch off schedule if current_time + switch_off_time greater than current schedule
+    #                      If value is not specified then it's -1
+    #   auto_trigger:      specifies if LightsControl should poll sensor' state for checking active_value
+    #                      if polled state is active_value then LightsControl assumes that sensor has been triggered
+    #                      and toggles lights on according to record specification
+    #                      0: don't poll. You should set HASS automation for turning light's on by sensor
+    #                      1: do poll. LightsControl would turn lights automatically but with polling delay
+    #                      Take a note: if you don't specify auto_trigger and don't set HASS automation
+    #                      sensor's state will still be used to prevent lights from turning off automatically
+    #                      but won't light it on
+    #   on_group:          a list of entities to turn ON,  for example [light.A, light.B].  # TODO:
+
+    # Defaults:
+    #   active_value:      'on'
+    #   active_time:       ["00:00:00", "23:59:59"]
+    #   switch_off_time:   sensor_default_switch_off  - it's a configuration variable
+    #   auto_trigger:      0
+    #   on_group:          map_record_name would be used as on_group by default (i.e. on = [<map_record_name>])
+
+    # Automatic names completions:
+    #   if sensor_name don't contains '.' then prefix 'sensor.' would be appended
+    #   if entity name in on_group don't contains '.' then prefix 'light.' would be appended
+
+sensor_default_switch_off: <switch_off_time>
+# switch_off_time:         Default switch off time for sensor actions in minutes
+#                          If not specified then default switch off time would be 5 minutes
+
+power_save:
+  <rule_name>:
+    timeout: <switch_off_time> (optional)
+    when: <active_time>   (optional)
+    lights: <lights_list> (optional)
+    # Mandatory fields:
+    #   rule_name:         a name to distinguish record. Also is used as default value for entity name in lights field
+    # Optional fields:
+    #   switch_off_time:   time of inactivity after which light may be turned off
+    #                      no activity means no switch actions or no triggered sensor actions
+    #   active_time:       time range in which lights may be turned off for power savings
+    #                      Should be specified as single list with start/end time in format ["HH:MM:SS", "HH:MM:SS"]
+    #                      or list of such lists like: [  ["HH:MM:SS", "HH:MM:SS"], ["HH:MM:SS", "HH:MM:SS"] ]
+    #   lights_list:       entities names that should be maintained by this power saving rule
+
+    # Defaults:
+    #   active_time:       ["00:00:00", "23:59:59"]
+    #   switch_off_time:   60
+    #   lights_list:       rule_name would be used as lights by default (i.e. lights_list = [<rule_name>])
+
+    # Automatic names completions:
+    #   if entity name in lights_list don't contains '.' then prefix 'light.' would be appended
+
+on_state:  # Specified state would be applied to lights in ON state
+  <rule_name>:
+    # Keyworded entry (aka dictionary)
+    # Time based ON/OFF states
+    - when: <active_time>
+      state: <light_state>
+      lights: <lights_list> (optional)
+    # State based ON/OFF states
+    - sensor: <hass_state_name>
+      value: <active_value>
+      state: <light_state>
+      lights: <lights_list> (optional)
+
+    # Positional entry (aka list, required to be turned on specially)
+    - [<active_time>, <light_state>, <lights_list> (optional) ]
+    - [<hass_state_name>, <active_value>, <light_state>, <lights_list> (optional)]
+
+off_state: # Specified state would be applied to lights in OFF state
+  # off state is specified in same manner as on_state
+
+    # Mandatory fields:
+    #   rule_name:         a name to distinguish record. Also is used as default value for entity name in lights_list
+    #   active_time:       time range when specified state should be applied
+    #                      Should be specified as single list with start/end time in format ["HH:MM:SS", "HH:MM:SS"]
+    #                      or list of such lists like: [  ["HH:MM:SS", "HH:MM:SS"], ["HH:MM:SS", "HH:MM:SS"] ]
+    #   hass_state_name:   if specified HASS state's value is treated as active then specified light_state would
+    #                      be applied to light
+    #   active_value:      defines condition to treat HASS state's value as active
+    #                      possible active_value variants:
+    #                      * scalar value - strict comparsion would be used
+    #                      * list with two numbers - it would be checked that value falls within range between numbers
+    #                      # TODO: other variants? like list with ranges, list with values
+    #   light_state:       To which state light should be switched
+    #                      possible light_state variants:
+    #                      * 'on'  - light would be turned on to max brightness
+    #                      * 'off' - light would be turned off
+    #                      * number in range from 0 to 255 - light would be turned on to specified brightness
+    #                      * string with HASS state that contains 'on', 'off' or number in range 0 to 255
+    #                      # TODO: list with 3 numbers - red, green, blue. light would be turned on with specified tint
+    # Optional fields:
+    #   lights_list:       entities names to which specified state should be applied
+
+    # Defaults:
+    #   lights_list:       rule_name would be used as lights by default (i.e. lights_list = [<rule_name>])
+
+    # Automatic names completions:
+    #   if entity name in lights_list don't contains '.' then prefix 'light.' would be appended
+
+notify_turn_off:
+  # Keyworded entry (aka dictionary)
+  <rule_name>:
+    kind: <notify_kind>
+    before: <before_turn_off>
+    lights: <lights_list> (optional)
+    args: <notify_kind_args> (optional)
+  # Positional entry (aka list, required to be turned on specially)
+  <rule_name>: [<notify_kind>, <before_turn_off>, <notify_kind_args> (optional)]
+    # Mandatory fields:
+    #   rule_name:         a name to distinguish record. Also is used as default value for entity name in lights_list
+    #   notify_kind:       turn off notification kind
+    #                      possible variants:
+    #                      * flash - light would flash once and briefly
+    #                      * dim   - lights brightness would be changed for period of notification
+    #   before_turn_off:   time in seconds to notify before turn_off
+    # Optional fields:
+    #   lights_list:       entities names to which specified state should be applied
+    #   notify_kind_args   list or dict with custom arguments for notification method, meaning depends on notification
+    #                      kind.
+    #                      for flash method: [<period>, <flashes_count>]
+    #                                     or {period: <period>, count: <flashes_count>}
+    #                        - period:         single flash period in ms (default is 10 ms)
+    #                        - flashes_count:  consequent flashes count (default is 5)
+    #                      for dim method: [<level>, <minimum_level>]
+    #                                   or {brightness: <level>, minimum: <minimum_levle>}
+    #                        - level:          brightness level
+    #                                          possible values:
+    #                                          * integer in range [1,255] - absolute brightness level
+    #                                          * float in range (0,1)     - fraction brightness level
+    #                                            sets brightness as fraction of ON state brightness level
+    #                                          * integer in range [-255,-1] - relative brightness change
+    #                                            sets delta to ON state brightness level.
+    #                                            resulting brightness = ON state brightness + level value
+    #                        - minimum_level:  minimum brightness level for relative/fraction brightness change
+
+    # Format: light_name: [notify_kind, notify_before_turn_off in seconds, notify_kind_args if there is any]
+    # If there is no '.' in name then 'light.' wold be append
+    # notify_kinds:
+    #   "flash" - quickly blink lights. flash args:
+    #      - period in ms (default is 10 ms)
+    #      - flashes count (default is 5)
+    #   "dim"   - change lights brightness. dim args:
+    #      - brightness level
+    #          values above 1 sets absolute brightness
+    #          values in range 0 <= x < 1 sets fraction of current brightness
+    #          values below 0 sets relative brightness change
+    #         (default is 50% of current),
+    #      - minimum brightness level (default is 10)
+
+    # Defaults:
+    #   lights_list:       rule_name would be used as lights by default (i.e. lights_list = [<rule_name>])
+
+    # Automatic names completions:
+    #   if entity name in lights_list don't contains '.' then prefix 'light.' would be appended
+
+automation_map:
+    <automation_entity_name>: <light_entity_name>
+    <automation_entity_name>: [<light_entity_name_1>, <light_entity_name_2>, ...]
+    # Automatic names completions:
+    #   if light_entity_name name don't contains '.' then prefix 'light.' would be appended
+    #   if automation_entity_name name don't contains '.' then prefix 'automation.' would be appended
