@@ -1,0 +1,18 @@
+homeassistant:
+
+# Add those to your HASS config if it's not already there
+
+# If you are using relay_hub to turn ON/OFF lights and switches
+# NOTE: promoting my other project for home automation
+relay_hub:
+  port: /dev/ttyACM1
+
+# Lights and switches description
+light: !include infrastructure/light.yaml
+switch: !include infrastructure/switch.yaml
+
+# Automations description
+automation: !include automations.yaml
+
+# And at last LightsControl
+lights_control: !include lights_control.yaml
