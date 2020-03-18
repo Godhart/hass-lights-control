@@ -88,7 +88,7 @@ for i in ops:
     result = subprocess.run(op, stdout=subprocess.PIPE)
     opath = os.path.join(output_dir, ".run_{}.txt".format(i+1))
     with open(opath, "wb") as f:
-        f.write("[Run]: {}\n".format(i+1).encode('utf-8'))
-        f.write("[Command]: {}\n".format(" ".join(['"'+item+'"' for item in op])).encode('utf-8'))
-        f.write("[Result]:\n".encode('utf-8'))
+        f.write("[Run]\n{}\n\n".format(i+1).encode('utf-8'))
+        f.write("[Command]\n{}\n\n".format(" ".join(['"'+item+'"' for item in op])).encode('utf-8'))
+        f.write("[Result]\n".encode('utf-8'))
         f.write(result.stdout)
