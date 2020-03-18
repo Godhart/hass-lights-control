@@ -1,0 +1,79 @@
+- platform: relay_hub
+  pins:
+    0:
+      name: Bathroom
+      dimmable: false
+      brightness: 255
+    1:
+      name: Shower
+      dimmable: false
+      brightness: 255
+    2:
+      name: Corridor Left
+      dimmable: false
+      brightness: 255
+    3:
+      name: Corridor Right
+      dimmable: false
+      brightness: 255
+    5:
+      name: Cloack Room
+      dimmable: false
+      brightness: 255
+    7:
+      name: Laundry
+      dimmable: false
+      brightness: 255
+    8:
+      name: Corridor Center
+      dimmable: false
+      brightness: 255
+    9:
+      name: Cabinet
+      dimmable: false
+      brightness: 255
+    10:
+      name: Kitchen Cook
+      dimmable: false
+      brightness: 255
+    11:
+      name: Kitchen Table
+      dimmable: false
+      brightness: 255
+    12:
+      name: Kid1 Rail
+      dimmable: false
+      brightness: 255
+    13:
+      name: Kid1 Center
+      dimmable: false
+      brightness: 255
+    14:
+      name: Kid2 Rail
+      dimmable: false
+      brightness: 255
+    15:
+      name: Kid2 Sun
+      dimmable: false
+      brightness: 255
+    16:
+      name: Guestroom Back
+      dimmable: false
+      brightness: 255
+    17:
+      name: Guestroom Main
+      dimmable: false
+      brightness: 255
+    18:
+      name: Bedroom Main
+      dimmable: false
+      brightness: 255
+    19:
+      name: Bedroom Contour
+      dimmable: false
+      brightness: 255
+    20:
+      name: TestLed
+      dimmable: true
+      brightness: 255
+      transient: true

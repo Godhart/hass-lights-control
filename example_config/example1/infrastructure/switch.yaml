@@ -1,0 +1,6 @@
+- platform: relay_hub
+  pins:
+    4:
+      name: Bathroom Bidet
+    6:
+      name: Shower Bidet
