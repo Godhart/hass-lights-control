@@ -11,5 +11,5 @@ def teardown_module(module):
 def test_pass():
     assert True
     
-def test_fail():
-    assert False
+# def test_fail():
+#    assert False
