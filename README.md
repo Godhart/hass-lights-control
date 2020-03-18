@@ -549,8 +549,13 @@ This should be enough.
 # TODOs:
 
 > TODO: make sure groups are supported properly
+
 > TODO: make sure that automation for groups update works
+
 > TODO: support turn_on/turn_off/toggle/set_level so LightsControl can be used as light proxy
+
 > TODO: resolve overlapping time ranges
+
 > TODO: support lights tinting. can be combined with brightness?
+
 > TODO: support ANDing sensor conditions
