@@ -1,0 +1,56 @@
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: button_Test
+  retain: false
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: button_Bathroom
+  retain: false
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: sensor_Bathroom
+  retain: false
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: sensor_BathroomHT
+  retain: false
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: BathroomFan
+  retain: false
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: button_Bedroom
+  retain: false
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: sensor_Cloackroom
+  retain: false
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: button_Corridor
+  retain: false
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: button_Guestroom
+  retain: false
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: button_Kid1
+  retain: false
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: button_Kid2
+  retain: false
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: button_Kitchen
+  retain: false
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: button_Kitchen2
+  retain: false
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: sensor_Laundry
+  retain: false
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: button_Shower
+  retain: false
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: sensor_Shower
+  retain: false
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: sensor_ShowerHT
+  retain: false
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: ShowerFan
+  retain: false
+'0xXXXXXXXXXXXXXXXX':
+  friendly_name: ZigBeeRouter
