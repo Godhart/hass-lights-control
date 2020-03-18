@@ -40,16 +40,16 @@ lights_control: !include lights_control.yaml
 
 input_boolean:
   # Test Configuration
-  testled:
+  testledA:
   testled2:
   testled3:
-  occupancytestsensor1:
-  occupancytestsensor2:
-  occupancytestsensor3:
-  occupancytestsensor4:
-  occupancytestsensor5:
-  occupancytestsensorg:
-  lowluminance:
+  testled_occupancy1:
+  testled_occupancy2:
+  testled_occupancy3:
+  testled_occupancy4:
+  testled_occupancy5:
+  testgroup_occupancy:
+  low_luminance:
 
 input_number:
   # Test Configuration

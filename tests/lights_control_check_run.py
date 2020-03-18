@@ -50,25 +50,25 @@ args = [
      "13:01:00", "3", "5"],
 
     # Sensors for single light
-    [config, state_output, "{scenario: sensor, name: sensor.occupancytestsensor1, value: 'on'}",
+    [config, state_output, "{scenario: sensor, name: sensor.testled_occupancy1, value: 'on'}",
      "23:00:00", "48", "31"],
-    [config, state_output, "{scenario: sensor, name: sensor.occupancytestsensor2, value: 'on'}",
+    [config, state_output, "{scenario: sensor, name: sensor.testled_occupancy2, value: 'on'}",
      "23:00:00", "48", "31"],
-    [config, state_output, "{scenario: sensor, name: sensor.occupancytestsensor3, value: 'on'}",
+    [config, state_output, "{scenario: sensor, name: sensor.testled_occupancy3, value: 'on'}",
      "23:00:00", "48", "31"],
 
     # Value range sensor for single
-    [config, state_output, "{scenario: sensor, name: sensor.occupancytestsensor4, value: 49}",
+    [config, state_output, "{scenario: sensor, name: sensor.testled_occupancy4, value: 49}",
      "23:00:00", "48", "31"],
-    [config, state_output, "{scenario: sensor, name: sensor.occupancytestsensor4, value: 50}",
+    [config, state_output, "{scenario: sensor, name: sensor.testled_occupancy4, value: 50}",
      "23:00:00", "48", "31"],
-    [config, state_output, "{scenario: sensor, name: sensor.occupancytestsensor4, value: 60}",
+    [config, state_output, "{scenario: sensor, name: sensor.testled_occupancy4, value: 60}",
      "23:00:00", "48", "31"],
-    [config, state_output, "{scenario: sensor, name: sensor.occupancytestsensor4, value: 61}",
+    [config, state_output, "{scenario: sensor, name: sensor.testled_occupancy4, value: 61}",
      "23:00:00", "48", "31"],
 
     # Sensors for list of lights
-    [config, state_output, "{scenario: sensor, name: sensor.occupancytestsensorg, value: 'on'}",
+    [config, state_output, "{scenario: sensor, name: sensor.testgroup_occupancy, value: 'on'}",
      "23:00:00", "48", "31"]
 ]
 
