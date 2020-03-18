@@ -1,6 +1,9 @@
 # All that is starting with a dot would be ignored
 .*
 
+# HASS secrets
+secrets.yaml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
