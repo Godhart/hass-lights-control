@@ -1,5 +1,4 @@
 #[]
-
 # Perform lights conrol watchdog routine every second
 - alias: 'Lights Watchdog'
   trigger:
@@ -8,6 +7,17 @@
   action:
     - service: lights_control.watchdog
 
+# MQTT Zigbee Logger
+# - alias: 'Zigbee Log'
+#   trigger:
+#     platform: mqtt
+#     topic: zigbee2mqtt/+
+#   action:
+#     - service: system_log.write
+#       data_template:
+#         level: 'warning'
+#         message: '{{ "{}".format(trigger) }}'
+
 # MQTT Zigbee Button
 - alias: 'Zigebee Buttons'
   trigger:
@@ -15,17 +25,16 @@
     topic: zigbee2mqtt/+
   condition:
     condition: template
-    value_template: {{ "/button" in trigger.topic }}
+    value_template: {{ "/button_" in trigger.topic }}
   action:
     - service: lights_control.switch
       data_template:
-        name: {{ "button."+trigger.topic.split("/")[-1] }}
+        name: {{ "button." + trigger.topic.split("/")[-1][7:] }}
         value: '{{ trigger.payload_json.click }}'
     - service: system_log.write
       data_template:
         level: 'debug'
         message: '{{ "{}".format(trigger) }}'
-
 
 # MQTT Zigbee Sensor
 - alias: 'Zigebee Sensors'
@@ -34,14 +43,15 @@
     topic: zigbee2mqtt/+
   condition:
     condition: template
-    value_template: {{ "/sensor" in trigger.topic and any(name in trigger.payload_json for name in ("occupancy", "humidity")) }}
+    value_template: {{ "/sensor_" in trigger.topic and any(name in trigger.payload_json for name in ("occupancy", "humidity")) }}
   action:
     service: lights_control.sensor
     data_template:
-      name: {{ "sensor."+trigger.topic.split("/")[-1] }}
-      value: {{ trigger.payload_json.get("humidity", ['off','on',-1][trigger.payload_json.get("occupancy", 2))] }}
+      name: {{ "sensor." + trigger.topic.split("/")[-1][7:] + ["_humidity", "_occupancy"]["occupancy" in trigger.payload_json] }}
+      value: {{ trigger.payload_json.get("humidity", ['off','on',"_none_"][trigger.payload_json.get("occupancy", 2))] }}
 
 # Lights automation control
+# TODO: try to create with template
 - alias: 'lights_test_led'
   trigger:
     platform: time_pattern

@@ -1,31 +1,31 @@
-lights_list:  # Just a list of lights to see them all in one place
-# Test Led on Arduino board
-  - test_led
-# Common lights
-  - bedroom_main
-  - bedroom_contour
-  - guestroom_main
-  - guestroom_back
-  - kid1_center
-  - kid1_rail
-  - kid2_sun
-  - kid2_rail
-  - corridor_left
-  - corridor_right
-  - corridor_center
-  - kitchen_cook
-  - kitchen_table
-  - cabinet
-  - shower
-  - cloack_room
-# Lights with nightlight function
-  - bathroom
-  - laundry
-# Relays
-  - switch.bathroom_fan
-  - switch.bathroom_bidet
-  - switch.shower_fan
-  - switch.shower_bidet
+#lights_list:  # Just a list of lights to see them all in one place
+## Test Led on Arduino board
+#  - test_led
+## Common lights
+#  - bedroom_main
+#  - bedroom_contour
+#  - guestroom_main
+#  - guestroom_back
+#  - kid1_center
+#  - kid1_rail
+#  - kid2_sun
+#  - kid2_rail
+#  - corridor_left
+#  - corridor_right
+#  - corridor_center
+#  - kitchen_cook
+#  - kitchen_table
+#  - cabinet
+#  - shower
+#  - cloack_room
+## Lights with nightlight function
+#  - bathroom
+#  - laundry
+## Relays
+#  - switch.BathroomFan
+#  - switch.bathroom_bidet
+#  - switch.ShowerFan
+#  - switch.shower_bidet
 
 ###########################################################################################
 # Switch buttons setup
@@ -57,7 +57,7 @@ switch_map:
 
   kid2_sun:   [{button: Kid2, event: left}]
   kid2_rail:  [{button: Kid2, event: right}]
-  kid2_all:   [{button: Kid1, event: both, lights_on: [kid1_center, kid1_rail]}]
+  kid2_all:   [{button: Kid2, event: both, lights_on: [kid2_sun, kid2_rail]}]
 
   corridor_left:
     - {button: Corrdior, event: right, lights_on: [corridor_left, corridor_center], lights_off: corridor_left}
@@ -82,13 +82,15 @@ switch_map:
 
   bathroom:
     - {button: Bathroom, event: single, switch_off: 15}
-    - {button: Bathroom, event: double, switch_off: 60}
+  BathroomFan:
+    - {button: Bathroom, event: double, switch_off: 15} # TODO: is there triple click? as double is wanted for magic click
   shower:
     - {button: Shower, event: single, switch_off: 15}
-    - {button: Shower, event: double, switch_off: 60}
+  ShowerFan:
+    - {button: Shower, event: double, switch_off: 15}   # TODO: is there triple click? as double is wanted for magic click
 
-  laundry:     [{button: Corridor, event: right_double, switch_off: 5}]
-  cloack_room: [{button: Corridor, event: left_double, switch_off: 5}]
+  laundry:     [{button: Corridor, event: right_double, switch_off: 10}]
+  cloack_room: [{button: Corridor, event: left_double, switch_off: 10}]
 
 ###########################################################################################
 # Sensors and states automation
@@ -105,13 +107,15 @@ sensor_map:
     - {sensor: Shower_humidity, value: [75,100], switch_off: 1}
   laundry:
     - {sensor: binary_sensor.Laundry_occupancy, value: 'on'}
+  cloackroom:
+    - {sensor: binary_sensor.Cloackroom_occupancy, value: 'on'}
   switch.bathroom_bidet:
     - {sensor: light.bathroom, value: 'on', 'auto': yes, switch_off: 1}
-  switch.bathroom_fan:
+  switch.BathroomFan:
     - {sensor: Bathroom_humidity, value: [75,100], 'auto': yes, switch_off: 15}
   switch.shower_bidet:
     - {sensor: light.shower, value: 'on', 'auto': yes, switch_off: 1}
-  switch.shower_fan:
+  switch.ShowerFan:
     - {sensor: Shower_humidity, value: [75,100], 'auto': yes, switch_off: 15}
 
 ###########################################################################################
@@ -229,5 +233,5 @@ automation_map:
   lights_bathroom: bathroom
   lights_shower: shower
   lights_service: [cloack_room, laundry]
-  relays_bathroom: [switch.bathroom_fan, switch.bathroom_bidet]
-  relays_shower: [switch.shower_fan, switch.shower_bidet]
+  relays_bathroom: [switch.BathroomFan, switch.bathroom_bidet]
+  relays_shower: [switch.ShowerFan, switch.shower_bidet]
