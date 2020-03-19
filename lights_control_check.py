@@ -24,7 +24,7 @@ _lights_control.LOG_CALLS = True
 # 4: start time
 # 5: times to call test function
 # 6: time step between calls
-
+# 7: timestep
 
 settings_path = sys.argv[1]
 state_path = sys.argv[2]
@@ -104,6 +104,21 @@ if len(sys.argv) > 6:
     step = int(sys.argv[6])
 else:
     step = 1
+if len(sys.argv) > 7:
+    timestep = int(sys.argv[7])
+else:
+    timestep = 1
+
+if 60 % timestep != 0:
+    allowed_timesteps = []
+    for i in range(1, 61):
+        if 60 % i == 0:
+            allowed_timesteps.append(str(i))
+    raise ValueError("Wrong timestep {}!\nAllowed timesteps are: {}".format(
+        timestep, ", ".join(allowed_timesteps)))
+
+timesteps_per_iteration = 60 // timestep
+
 for i in range(0, times):
     log(hass.time_now())
     data = call_data
@@ -112,8 +127,8 @@ for i in range(0, times):
     end_time = time()
     # log("Call elapsed {} secs".format(end_time - start_time))
     print("Call elapsed {} secs".format(end_time - start_time), file=sys.stderr)
-    for j in range(0, step*60):
-        hass.inc_time(1)
+    for j in range(0, step*timesteps_per_iteration):
+        hass.inc_time(timestep)
         # log(hass.date_now())
         data = {'scenario': 'watchdog'}
         start_time = time()
@@ -121,4 +136,5 @@ for i in range(0, times):
         end_time = time()
         # log("Watchdog elapsed {} secs".format(end_time-start_time))
 
-hass.save_state(state_path+"o")
+if state_path not in ("", "-"):
+    hass.save_state(state_path+"o")
