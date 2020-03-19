@@ -2,7 +2,7 @@
 5
 
 [Command]
-"python" "..\lights_control_check.py" "..\example_config\testing\lights_control.yaml" "-" "{scenario: switch, name: button.testled_button3, value: double}" "13:01:00" "3" "5"
+"python" "..\lights_control_check.py" "..\example_config\testing\lights_control.yaml" ".check_run_output\.state.yaml" "{scenario: switch, name: button.testled_button3, value: double}" "13:01:00" "3" "5"
 
 [Result]
 LightsControl component just inited

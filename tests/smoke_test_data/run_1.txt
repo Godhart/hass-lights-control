@@ -2,7 +2,7 @@
 1
 
 [Command]
-"python" "..\lights_control_check.py" "..\example_config\testing\lights_control.yaml" "-" "{scenario: watchdog, name: _none_, value: _none_}" "23:29:59" "1" "10"
+"python" "..\lights_control_check.py" "..\example_config\testing\lights_control.yaml" ".check_run_output\.state.yaml" "{scenario: watchdog, name: _none_, value: _none_}" "23:29:59" "1" "10"
 
 [Result]
 LightsControl component just inited
