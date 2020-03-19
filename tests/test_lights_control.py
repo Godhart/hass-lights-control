@@ -72,7 +72,7 @@ def test_smoke():
 
     assert tests_count > 0
     if len(failed_runs) > 0:
-        assert "Failed runs: " + ", ".join(failed_runs) == ""
+        assert "Failed runs: " + ", ".join(sorted(failed_runs)) == ""
 
 # def test_fail():
 #    assert False
