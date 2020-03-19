@@ -1,0 +1,17 @@
+[Run]
+3
+
+[Command]
+"python" "..\lights_control_check.py" "..\example_config\testing\lights_control.yaml" "-" "{scenario: switch, name: button.testled_button1, value: single}" "13:01:00" "3" "5"
+
+[Result]
+LightsControl component just inited
+1970-01-01 13:01:00+00:00
+LightsControl is loading configuration
+HassMock: Light light.testledA were turned ON to brightness 155 at 1970-01-01 13:01:00+00:00
+HassMock: Light light.testled2 were turned ON to brightness 122 at 1970-01-01 13:01:01+00:00
+HassMock: Light light.testled3 were turned ON to brightness 122 at 1970-01-01 13:01:01+00:00
+1970-01-01 13:06:00+00:00
+HassMock: Light light.testledA were turned ON to brightness 44 at 1970-01-01 13:06:00+00:00
+1970-01-01 13:11:00+00:00
+HassMock: Light light.testledA were turned ON to brightness 155 at 1970-01-01 13:11:00+00:00
