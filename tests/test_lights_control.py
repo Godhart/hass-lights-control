@@ -67,7 +67,8 @@ def test_smoke():
                 output = result.stdout.decode('utf-8').replace("\r\n", "\n").replace("\n\r", "\n")
                 if output != expected:
                     print("    FAILED as result is not same as expected\n", file=sys.stderr)
-                    for i, s in enumerate(difflib.unified_diff(expected.split('\n'), output.split('\n'))):
+                    for i, s in enumerate(difflib.unified_diff(expected.split('\n'), output.split('\n'),
+                                                               fromfile='expected', tofile='result')):
                         print(f"{i}:{s}", file=sys.stderr)
                     if __name__ == "__main__":
                         with open(".pytest_error_dump", "w") as f:
