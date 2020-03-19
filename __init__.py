@@ -192,23 +192,6 @@ def sensor_template(
 @bind_hass
 def on_light_change(
     hass,
-    name,
-    value
-):
-    """React to lights state change"""
-    hass.services.call(
-        DOMAIN,
-        SERVICE_ON_LIGHT_CHANGE,
-        {
-            ATTR_NAME: name,
-            ATTR_VALUE: value
-        },
-    )
-
-
-@bind_hass
-def on_light_change(
-    hass,
     name_template,
     value_template
 ):

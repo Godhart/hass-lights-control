@@ -3,7 +3,7 @@ import os
 import yaml
 import copy
 from datetime import datetime, timedelta, timezone
-from .constants import *
+from .constants import STATE_ON, STATE_OFF
 
 
 class State(object):
@@ -48,7 +48,8 @@ class Service(object):
 
     def call(self, domain, service, service_data, wait):
         assert wait is True, "Forgot to set wait to True"
-        assert domain in ('variable', 'light', 'switch'), "It's just a mock! Only few calls for variable and light are supported"
+        assert domain in ('variable', 'light', 'switch'), "It's just a mock!" \
+                                                          " Only few calls for variable and light are supported"
         if domain == 'variable':
             if service == 'set_variable_data':
                 self._set_state('variable.', service_data['variable'], service_data['value'])

@@ -1,5 +1,5 @@
 import datetime
-from .constants import *
+from .constants import STATE_OFF
 # import pprint
 
 LOG_FAIL = True
@@ -126,4 +126,3 @@ def light_state(h, obj):
     if _ls is None:
         return None
     return {'state': _ls['state'], 'brightness': _ls['attributes'].get('brightness', 255)}
-

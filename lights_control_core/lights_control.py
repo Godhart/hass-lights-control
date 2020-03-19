@@ -6,7 +6,7 @@ from datetime import datetime
 from copy import copy, deepcopy
 import re
 import pprint
-from .constants import *
+from .constants import STATE_ON, STATE_OFF
 
 
 ALLOW_AUTO_MAGIC = True         # Allow automatic magic events creation for double clicks
@@ -17,6 +17,7 @@ LOG_PARSING = False     # Log configuration parsing
 LOG_CALLS = False       # Log service calls starts besides watchdog
 LOG_WATCHDOG = False    # Log watchdog calls starts
 
+
 class _ChoppedTime(object):
 
     def __init__(self, value):
@@ -26,7 +27,7 @@ class _ChoppedTime(object):
             self._value_complete = None
         elif isinstance(value, datetime):
             self._value_complete = value
-            self._value = datetime(year=1900, month=1, day=1, hour=value.hour, minute=value.minute,second=value.second)
+            self._value = datetime(year=1900, month=1, day=1, hour=value.hour, minute=value.minute, second=value.second)
             self._value_str = self._value.strftime("%H:%M:%S")
         elif isinstance(value, _ChoppedTime):
             self._value = value.value
@@ -83,7 +84,7 @@ class LightsControlConfig(object):
         self.sensor_map = {}
         self.sensor_timeout = {}
         self.automation_map = {}
- 
+
         if not use_variable:
             self._intial_data = {
                 'on_state': deepcopy(on_state),
@@ -190,9 +191,10 @@ class LightsControlConfig(object):
             record = args
         else:
             record = kwargs
-            
+
         if LOG_PARSING:
-            self._log("Parsing record:\n  format: {}\n  data: {} ".format(pprint.pformat(keywords), pprint.pformat(record, indent=4)))
+            self._log("Parsing record:\n  format: {}\n  data: {} ".format(pprint.pformat(keywords), pprint.pformat(
+                record, indent=4)))
 
         if isinstance(record, (list, tuple)):
             for i in range(0, len(keywords)):
@@ -201,8 +203,8 @@ class LightsControlConfig(object):
                 else:
                     if i < min_len:
                         raise ValueError("Unexpected format: "
-                                         "Excepted at least {} positional arguments ({})".format(
-                            min_len, keywords[:min_len]))
+                                         "Excepted at least {} positional arguments"
+                                         " ({})".format(min_len, keywords[:min_len]))
                     result[keywords[i][0]] = keywords[i][1]
         else:
             for i in range(0, len(keywords)):
@@ -258,7 +260,7 @@ class LightsControlConfig(object):
                 if not isinstance(data[i], str):
                     return None
                 data[i] = data[i].strip()
-                m = re.search("^(\d\d):(\d\d):(\d\d)$", data[i])
+                m = re.search(r"^(\d\d):(\d\d):(\d\d)$", data[i])
                 if m is None:
                     return None
                 hh, mm, ss = m.groups()
@@ -401,11 +403,11 @@ class LightsControlConfig(object):
         Parses complicated dictionary config (in which value is list of list records or dict records
         Returns normalized dict of rules
         """
-        
+
         if LOG_PARSING:
             self._log("Parsing rules_map:\n  map_name={}\n  key_field={}\n  parse_method={}\n"
-            "  data: {} ".format(map_name, key_field, parse_method, pprint.pformat(rules_map, indent=4)))
-        
+                      "  data: {} ".format(map_name, key_field, parse_method, pprint.pformat(rules_map, indent=4)))
+
         result = {}
 
         if not isinstance(rules_map, dict):
@@ -614,8 +616,8 @@ class LightsControlConfig(object):
             validated_time = self._validated_time(data['when'])
             if validated_time is None:
                 self._error("LightsControl: Unexpected sensor time format for '{}' rule:"
-                            " time range as ['HH:MM:SS','HH:MM:'SS'] or list of such items expected (got {})".format(
-                    rule, data['when']))
+                            " time range as ['HH:MM:SS','HH:MM:'SS'] or list of such items expected"
+                            " (got {})".format(rule, data['when']))
                 return None
             else:
                 data['when'] = validated_time
@@ -662,8 +664,8 @@ class LightsControlConfig(object):
             validated_time = self._validated_time(data['when'])
             if validated_time is None:
                 self._error("LightsControl: Unexpected time range for on or off for '{}' rule:"
-                            " time range as ['HH:MM:SS','HH:MM:'SS'] or list of such items expected (got {})".format(
-                    rule, data['when']))
+                            " time range as ['HH:MM:SS','HH:MM:'SS'] or list of such items expected"
+                            " (got {})".format(rule, data['when']))
                 return None
             else:
                 data['when'] = validated_time
@@ -698,8 +700,8 @@ class LightsControlConfig(object):
             validated_time = self._validated_time(data['when'])
             if validated_time is None:
                 self._error("LightsControl: Unexpected power save time format for '{}' rule:"
-                            " time range as ['HH:MM:SS','HH:MM:'SS'] or list of such items expected (got {})".format(
-                    rule, data['when']))
+                            " time range as ['HH:MM:SS','HH:MM:'SS'] or list of such items expected"
+                            " (got {})".format(rule, data['when']))
                 return None
             else:
                 data['when'] = validated_time
@@ -964,7 +966,7 @@ class LightsControl(object):
 
         self.reload_groups()
         self._inited = not errors
-        
+
         if LOG_PARSING and not errors:
             self._log("  switch_events:" + pprint.pformat(self.switch_events, indent=4))
             self._log("  sensor_map:" + pprint.pformat(self.sensor_map, indent=4))
@@ -1022,8 +1024,8 @@ class LightsControl(object):
     def __light_is_on(state, off_state):
         """ Returns True if state is not STATE_OFF and is not same as off_state"""
         return state['state'] != STATE_OFF and \
-               state['state'] != off_state['state'] and \
-               ('brightness' not in off_state or state['brightness'] != off_state['brightness'])
+                state['state'] != off_state['state'] and \
+                ('brightness' not in off_state or state['brightness'] != off_state['brightness'])
 
     def _light_is_on(self, light, time_now):
         """ Returns True if light is on it it's state (brightness) is not same as off_state"""

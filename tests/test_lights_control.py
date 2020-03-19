@@ -7,12 +7,12 @@ import difflib
 
 
 def setup_module(module):
-    #init_something()
+    # init_something()
     os.chdir("tests")
 
 
 def teardown_module(module):
-    #teardown_something()
+    # teardown_something()
     os.chdir("..")
 
 
