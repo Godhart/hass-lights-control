@@ -3,6 +3,7 @@ import os
 import sys
 import subprocess
 import re
+import difflib
 
 
 def setup_module(module):
@@ -41,6 +42,7 @@ def parse_test_data(filepath):
                 data += line
     return command, data
 
+
 def test_smoke():
     tests_count = 0
     failed_runs = []
@@ -53,7 +55,9 @@ def test_smoke():
                 print(f"  {filename}:", file=sys.stderr)
                 if filename[-4:] != ".txt":
                     continue
-                op, expected = parse_test_data(os.path.join(test_data_dir, filename))
+                if "skip" in curdir:
+                    continue
+                op, expected = parse_test_data(os.path.join(curdir, filename))
                 if op is None or expected is None:
                     print("    FAILED to parse test data\n", file=sys.stderr)
                     failed_runs.append(filename)
@@ -63,6 +67,11 @@ def test_smoke():
                 output = result.stdout.decode('utf-8').replace("\r\n", "\n").replace("\n\r", "\n")
                 if output != expected:
                     print("    FAILED as result is not same as expected\n", file=sys.stderr)
+                    for i, s in enumerate(difflib.unified_diff(expected.split('\n'), output.split('\n'))):
+                        print(f"{i}:{s}", file=sys.stderr)
+                    if __name__ == "__main__":
+                        with open(".pytest_error_dump", "w") as f:
+                            f.write(output)
                     failed_runs.append(filename)
                 else:
                     print("    SUCCESS\n", file=sys.stderr)
