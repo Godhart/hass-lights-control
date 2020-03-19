@@ -1415,7 +1415,7 @@ class LightsControl(object):
 
         # TODO: check entities doubling among routines
         time_now = self._time_now()
-        for light in self.sensor_map[sensor_name]:
+        for light in sorted(self.sensor_map[sensor_name].keys()):
             for routine in self.sensor_map[sensor_name][light]:
                 self._sensor(light, sensor_value, routine, time_now)
         self._scheduled_run()
@@ -1576,7 +1576,7 @@ class LightsControl(object):
             self._log("LightsControl is running watchdog routine for {}".format(lights))
 
         time_now = self._time_now()
-        for l in lights:
+        for l in sorted(lights):
             state = light_state(self._h, l)
             if state is not None:
                 self._watchdog(l, state, time_now)
