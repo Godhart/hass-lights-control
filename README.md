@@ -2,7 +2,7 @@
 
 ![HASS Lights Control add-on standalone test](https://github.com/Godhart/hass-lights-control/workflows/HASS%20Lights%20Control%20add-on%20standalone%20test/badge.svg)
 
-> TODO: test is just a stub yet but I'm going to support running smoke tests soon
+> TODO: validate smoke test reference (golden) data
 
 ## Intro
 
