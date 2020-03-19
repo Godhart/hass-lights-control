@@ -31,6 +31,7 @@ def parse_test_data(filepath):
             if next_command:
                 next_command = False
                 command = re.findall('"([^"]*)"', line)
+                command = [os.path.normcase(os.path.normpath(c)) for c in command]
                 continue
             if command is not None and line.strip() == "[Result]":
                 data = ""
