@@ -115,8 +115,8 @@ def log_to_csv(path):
             if filename[-4:] != ".txt":
                 continue
             try:
-                #process_file(os.path.join(curdir, filename))
-                result = subprocess.run(["python", sys.argv[0], os.path.join(curdir, filename)])
+                # process_file(os.path.join(curdir, filename))
+                subprocess.run(["python", sys.argv[0], os.path.join(curdir, filename)])
             except Exception as e:
                 print(f"  Failed due to exception:\n    {e}\n")
 
