@@ -16,6 +16,7 @@ DISABLE_SENSORS_WITH_AUTOMATION = True  # Disable sensor actions with automation
 LOG_PARSING = False     # Log configuration parsing
 LOG_CALLS = False       # Log service calls starts besides watchdog
 LOG_WATCHDOG = False    # Log watchdog calls starts
+INFIELD_DEBUG = False   # Log messages for infield debugging (should be removed bit later)
 
 
 class _ChoppedTime(object):
@@ -1135,6 +1136,10 @@ class LightsControl(object):
     def _value_is_within_range(value, activating_value):
         if isinstance(activating_value, (list, tuple)):
             try:
+                value = float(value)
+            except Exception as e:
+                return False
+            try:
                 if activating_value[0] <= value <= activating_value[1]:
                     return True
             except TypeError:
@@ -1160,7 +1165,7 @@ class LightsControl(object):
                         if isinstance(s['state'], str) and s['state'] not in (STATE_ON, STATE_OFF):
                             s['state'] = value_get(self._h, s['state'], STATE_OFF)
                         if s['state'] != STATE_OFF:
-                            _os['state'] = STATE_ON
+                            _os = {'state': STATE_ON, 'brightness': 255}
                             if s['state'] != STATE_ON and isinstance(s['state'], int) and 0 <= s['state'] <= 255:
                                 _os['brightness'] = s['state']
                         break
@@ -1170,7 +1175,7 @@ class LightsControl(object):
                         if isinstance(s['state'], str) and s['state'] not in (STATE_ON, STATE_OFF):
                             s['state'] = value_get(self._h, s['state'], STATE_OFF)
                         if s['state'] != STATE_OFF:
-                            _os['state'] = STATE_ON
+                            _os = {'state': STATE_ON, 'brightness': 255}
                             if s['state'] != STATE_ON and isinstance(s['state'], int) and 0 <= s['state'] <= 255:
                                 _os['brightness'] = s['state']
                         break
@@ -1372,7 +1377,11 @@ class LightsControl(object):
             value = value_get(self._h, name)
         if value is not None:
             if self._time_in_range(active_time, time_now):
+                if INFIELD_DEBUG and isinstance(activating_value, (list, tuple)):
+                    self._warning("Checking that value {} of {} is within range {}".format(value, name, activating_value))
                 if self._value_is_within_range(value, activating_value):
+                    if INFIELD_DEBUG and isinstance(activating_value, (list, tuple)):
+                        self._warning("  it is!")
                     return True
         return False
 
@@ -1495,6 +1504,8 @@ class LightsControl(object):
                                                    activating_value=routine['value'],
                                                    active_time=routine['when'],
                                                    time_now=time_now):
+                    if INFIELD_DEBUG:
+                        self._warning("Watchdog is turning {} on by auto sensor {}".format(light, routine['sensor']))
                     self._switch_on(light, routine['switch_off'], time_now=time_now)
                     return  # No need to proceed since light were just turned on
 
@@ -1542,6 +1553,8 @@ class LightsControl(object):
 
             # Turn off when it's time to switch off
             if 0 <= self.context[light]['switch_off'] <= seconds_now and all_sensors_inactive:
+                if INFIELD_DEBUG:
+                    self._warning("Watchdog is turning {} off".format(light))
                 self._switch_off(light, time_now=time_now)
 
             # Update on state if necessary and no turn_off notification
@@ -1553,6 +1566,8 @@ class LightsControl(object):
                         and 'brightness' in light_current_state
                         and _os['brightness'] != light_current_state['brightness']
                 ):
+                    if INFIELD_DEBUG:
+                        self._warning("Watchdog is updating ON state of {}".format(light))
                     self._switch_on(light, time_now=time_now, switch_off=0, force_switch_on=True)
                     # switch_off=0 since switch_off time shouldn't be altered
 
@@ -1565,6 +1580,8 @@ class LightsControl(object):
                     and 'brightness' in light_current_state
                     and _os['brightness'] != light_current_state['brightness']
                 ):
+                    if INFIELD_DEBUG:
+                        self._warning("Watchdog is updating OFF state of {}".format(light))
                     self._switch_off(light, time_now=time_now)
 
     def watchdog(self):
@@ -1584,7 +1601,7 @@ class LightsControl(object):
                 self._watchdog(l, state, time_now)
         self._scheduled_run()
 
-    def on_light_change(self, light, time_now=None):
+    def on_light_change(self, light, seconds_now=None):
         """
         Updates current light state
         Main use is for case if light were turned on/off by GUI or some other means, not by LightsControl
@@ -1594,25 +1611,43 @@ class LightsControl(object):
             self.restart()
         if not self._inited:
             return
+        if INFIELD_DEBUG:
+            self._warning("on_light_change({}, {})".format(light, seconds_now))
         if light not in self.context:
+            if INFIELD_DEBUG:
+                self._warning("  entity {} not in context".format(light))
             return
-        if time_now is None:
-            time_now = self._time_now()
-        seconds_now = self._time_to_seconds(time_now)
+        if seconds_now is None or seconds_now == '':
+            seconds_now = self._time_to_seconds(self._time_now())
+        else:
+            seconds_now = float(seconds_now)
         if self.context[light]['last_action_secs'] + 2 < seconds_now:  # NOTE: 2 seconds margin for self's action
             ls = light_state(self._h, light)
             if ls is None:
                 return
+            if INFIELD_DEBUG:
+                self._warning("  {} state is {}".format(light, ls))
             if ls['state'] == STATE_ON:
-                self.context[light]['is_on'] = [1, 2][ls['state'] != self._on_state(light, self._time_now())]
+                if INFIELD_DEBUG:
+                    self._warning("  {} ON state is {}".format(light, self._on_state(light, self._time_now())))
+                self.context[light]['is_on'] = [1, 2][ls != self._on_state(light, self._time_now())]
             else:
-                self.context[light]['in_on'] = [0, -1][ls['state'] != self._off_state(light, self._time_now())]
+                ls = {'state': STATE_OFF}
+                if INFIELD_DEBUG:
+                    self._warning("  {} OFF state is {}".format(light, self._off_state(light, self._time_now())))
+                self.context[light]['is_on'] = [0, -1][ls != self._off_state(light, self._time_now())]
             self.context[light]['switch_off'] = -1
             self.context[light]['notify'] = -1
             self.context[light]['notified'] = False
             if self.context[light]['is_on'] > 0:
                 self.context[light]['last_activity_secs'] = seconds_now
             self._push_context()
+            if INFIELD_DEBUG:
+                self._warning("  accepted external state change. now it's: {}".format(self.context[light]))
+        else:
+            if INFIELD_DEBUG:
+                self._warning("  reject state change as it's close to self's recent action"
+                              " ({} +2 >= {})".format(self.context[light]['last_action_secs'], seconds_now))
 
     def dump(self):
         if self._inited is None:
@@ -1633,5 +1668,4 @@ class LightsControl(object):
             'automation_map': self.automation_map,
             'context': self.context,
         }
-        self._log("Dump:")
-        self._log(pprint.pformat(data, indent=4))
+        self._warning("Dump:\n"+pprint.pformat(data, indent=4))
