@@ -1,28 +1,28 @@
 switch:
   # Description of the service
-  description: Process switch button event i.e. button click, flick of the switch etc.
+  description: React to switch button event i.e. button click, flick of the switch etc.
   # Different fields that your service accepts
   fields:
     # Key of the field
     name:
       description: string (required) The name of button or other entity that invokes event
     value:
-      description: any (required) Button's event name that just happened
+      description: string (required) Button's event name that just happened
 
 switch_template:
   # Description of the service
-  description: Process switch button event i.e. button click, flick of the switch etc.
+  description: React to switch button event i.e. button click, flick of the switch etc.
   # Different fields that your service accepts
   fields:
     # Key of the field
     name_template:
-      description: template (required) Buttons's name from template. String expected
+      description: template (required) The name of button or other entity that invokes event. String expected
     value_template:
-      description: template (required) Buttons's event name that just happened from a template
+      description: template (required) Button's event name that just happened
 
 sensor:
   # Description of the service
-  description: Process sensor's value change
+  description: React to sensor's value change
   # Different fields that your service accepts
   fields:
     # Key of the field
@@ -33,36 +33,36 @@ sensor:
 
 sensor_template:
   # Description of the service
-  description: Process sensor's value change
+  description: React to sensor's value change
   # Different fields that your service accepts
   fields:
     # Key of the field
     name_template:
-      description: template (required) Sensor's name from template. String expected
+      description: template (required) The name of sensor. String expected
     value_template:
-      description: template (required) Sensor's value from a template
+      description: template (required) Sensor's value
 
 on_light_change:
   # Description of the service
-  description: Make lights control to react on light's state change
+  description: Make lights control to update it's context when light's state changed by other means.
   # Different fields that your service accepts
   fields:
     # Key of the field
     name:
-      description: string (required) The name of light. May be replaced with name_template
-    value:
-      description: any (required) Light state. May be replaced with name_template
+      description: string (required) The name of entity which state changed
+    seconds:
+      description: string, integer or float (optional) Time of the moment when light's state were changed. Expected seconds since 1970-01-01. Empty string is treated as no param.
 
 on_light_change_template:
   # Description of the service
-  description: Make lights control to react on light's state change. String expected
+  description: Make lights control to update it's context when light's state changed by other means.
   # Different fields that your service accepts
   fields:
     # Key of the field
     name_template:
-      description: template (required) Lights's name from template
-    value_template:
-      description: template (required) Light state from a template
+      description: template (required) The name of entity which state changed. Sring expected
+    seconds_template:
+      description: template (optional) Time of the moment when light's state were changed. Expected seconds since 1970-01-01. Accepts strings, integers or floats. Empty string is treated as no param.
 
 watchdog:
   # Description of the service
@@ -74,9 +74,9 @@ reload_groups:
   description: Reloads groups informations
   fields: {}
 
-reload_groups:
+restart:
   # Description of the service
-  description: Restarts lights control component from the scratch - parses config, loads groups etc.
+  description: Restarts lights control component from the scratch - parses config, loads groups etc
   fields: {}
 
 dump:
