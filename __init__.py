@@ -49,7 +49,7 @@ SERVICE_SWITCH = "switch"
 SERVICE_SWITCH_SCHEMA = vol.Schema(
     {
         vol.Required(ATTR_NAME): cv.string,
-        vol.Required(ATTR_VALUE): cv.match_all,
+        vol.Required(ATTR_VALUE): cv.string,
     }
 )
 
@@ -240,6 +240,19 @@ def restart(
     hass.services.call(
         DOMAIN,
         SERVICE_RESTART,
+        {
+        },
+    )
+
+
+@bind_hass
+def dump(
+    hass
+):
+    """Dump"""
+    hass.services.call(
+        DOMAIN,
+        SERVICE_DUMP,
         {
         },
     )
