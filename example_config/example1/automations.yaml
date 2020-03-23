@@ -1,22 +1,29 @@
 #[]
-# Perform lights conrol watchdog routine every second
-- alias: 'Lights Watchdog'
+# Perform lights control watchdog routine every second
+- alias: 'LightsControl Watchdog'
   trigger:
     platform: time_pattern
     seconds: "/1" # Every second
   action:
     - service: lights_control.watchdog
 
-# MQTT Zigbee Logger
-# - alias: 'Zigbee Log'
-#   trigger:
-#     platform: mqtt
-#     topic: zigbee2mqtt/+
-#   action:
-#     - service: system_log.write
-#       data_template:
-#         level: 'warning'
-#         message: '{{ "{}".format(trigger) }}'
+# Makes LightsControl to react to light state changes made via GUI or other automations
+- alias: 'LightsControl state changes sync'
+  trigger:
+    platform: event
+    event_type: state_changed
+  condition:
+    condition: template
+    value_template: '{{ "light." == trigger.event.data.entity_id[:6] or "switch." == trigger.event.data.entity_id[:7] }}'
+  action:
+    - service: lights_control.on_light_change
+      data_template:
+        name: '{{ trigger.event.data.entity_id }}'
+        value: '{{ trigger.event.data.new_state.last_changed.timestamp()|float }}'
+    - service: system_log.write
+      data_template:
+        level: 'warning'
+        message: '{{ "state of {} changed to {}".format(trigger.event.data.entity_id, trigger.event.data.new_state.as_dict()) }}'
 
 # MQTT Zigbee Button
 - alias: 'Zigebee Buttons'
@@ -25,30 +32,54 @@
     topic: zigbee2mqtt/+
   condition:
     condition: template
-    value_template: {{ "/button_" in trigger.topic }}
+    value_template: '{{ "/button_" in trigger.topic }}'
   action:
     - service: lights_control.switch
       data_template:
-        name: {{ "button." + trigger.topic.split("/")[-1][7:] }}
+        name: '{{ "button." + trigger.topic.split("/")[-1][7:] }}'
         value: '{{ trigger.payload_json.click }}'
     - service: system_log.write
       data_template:
-        level: 'debug'
-        message: '{{ "{}".format(trigger) }}'
+        level: 'warning'
+        message: '{{ "Zigbee Button Click: button." + trigger.topic.split("/")[-1][7:] + "\n {}".format(trigger) }}'
 
-# MQTT Zigbee Sensor
-- alias: 'Zigebee Sensors'
+# MQTT Zigbee Occupancy Sensor
+- alias: 'Zigebee Occupancy Sensors'
   trigger:
     platform: mqtt
     topic: zigbee2mqtt/+
   condition:
     condition: template
-    value_template: {{ "/sensor_" in trigger.topic and any(name in trigger.payload_json for name in ("occupancy", "humidity")) }}
+    value_template: '{{ "/sensor_" in trigger.topic and "occupancy" in trigger.payload_json }}'
   action:
-    service: lights_control.sensor
-    data_template:
-      name: {{ "sensor." + trigger.topic.split("/")[-1][7:] + ["_humidity", "_occupancy"]["occupancy" in trigger.payload_json] }}
-      value: {{ trigger.payload_json.get("humidity", ['off','on',"_none_"][trigger.payload_json.get("occupancy", 2))] }}
+    - service: lights_control.sensor
+      data_template:
+        name: '{{ "binary_sensor.{}_occupancy".format(trigger.topic.split("/")[-1][7:]) }}'
+        value: '{{ ["off", "on"][trigger.payload_json["occupancy"]] }}'
+    - service: system_log.write
+      data_template:
+        level: 'warning'
+        message: '{{ "Zigbee Occupancy Sensor: binary_sensor.{}_occupancy\n  {}".format(trigger.topic.split("/")[-1][7:], trigger) }}'
+
+# MQTT Zigbee Humidity Sensor
+# NOTE: It's here for example as actually automation for humidity sensor isn't required for this setup
+#       as humidity sensor is setup to use autotrigger or used to retain ON state (which doesn't requires this at all)
+- alias: 'Zigebee Humidity Sensors'
+  trigger:
+    platform: mqtt
+    topic: zigbee2mqtt/+
+  condition:
+    condition: template
+    value_template: '{{ "/sensor_" in trigger.topic and "humidity" in trigger.payload_json }}'
+  action:
+    - service: lights_control.sensor
+      data_template:
+        name: '{{ "sensor.{}_humidity".format(trigger.topic.split("/")[-1][7:]) }}'
+        value: '{{ trigger.payload_json["humidity"]|float }}'
+    - service: system_log.write
+      data_template:
+        level: 'warning'
+        message: '{{ "Zigbee Humidity Sensor: sensor.{}_humidity\n  {}".format(trigger.topic.split("/")[-1][7:], trigger) }}'
 
 # Lights automation control
 # TODO: try to create with template
@@ -139,6 +170,6 @@
 - alias: 'relays_shower'
   trigger:
     platform: time_pattern
-    minutes: "/60011" # Every 1000 Hours
+    minutes: "/60012" # Every 1000 Hours
   action:
     - service: lights_control.watchdog

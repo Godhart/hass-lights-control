@@ -22,24 +22,24 @@
 #  - bathroom
 #  - laundry
 ## Relays
-#  - switch.BathroomFan
+#  - switch.bathroom_fan
 #  - switch.bathroom_bidet
-#  - switch.ShowerFan
+#  - switch.shower_fan
 #  - switch.shower_bidet
 
 ###########################################################################################
 # Switch buttons setup
 switch_map:
   test_led:
-    - {button: TestButton, event: single, switch_off: 5}
-    - {button: TestButton, event: double, switch_off: 3, magic: yes}
+    - {button: test, event: single, switch_off: 5}
+    - {button: test, event: double, switch_off: 3, magic: yes}
 
   # all_lights:   # Turn off all lights with just single switch button
   #  - {button: Corrdior, event: both_double, lights_on: [], lights_off:[group.lights_all]}
 
-  bedroom_main:      [{button: Bedroom, event: left}]
-  bedroom_contour:   [{button: Bedroom, event: right}]
-  befroom_all:       [{button: Bedroom, event: both, lights_on: [bedroom_main, bedroom_contour]}]
+  bedroom_main:      [{button: bedroom, event: left}]
+  bedroom_contour:   [{button: bedroom, event: right}]
+  befroom_all:       [{button: bedroom, event: both, lights_on: [bedroom_main, bedroom_contour]}]
   # NOTE: separate rule is required to turn ON/OFF bedroom_main and bedroom_contour lights simultaneously
   # otherwise (if set bedroom_main events to [left, both] and bedroom_contour events to [right, both]
   # bedroom_main and bedroom_contour lights may toggle ON/OFF out of phase by 'both' event
@@ -47,50 +47,50 @@ switch_map:
   # would toggle bedroom_main to OFF and bedroom_contour to ON
   # To avoid this separate rule like this is required
 
-  guestroom_main:    [{button: Guestroom, event: left}]
-  guestroom_back:    [{button: Guestroom, event: right}]
-  guestasdfroom_all: [{button: Guestroom, event: both, lights_on: [bedroom_main, bedroom_contour]}]
+  guestroom_main:    [{button: guestroom, event: left}]
+  guestroom_back:    [{button: guestroom, event: right}]
+  guestroom_all:     [{button: guestroom, event: both, lights_on: [bedroom_main, bedroom_contour]}]
 
-  kid1_center: [{button: Kid1, event: left}]
-  kid1_rail:   [{button: Kid1, event: right}]
-  kid1_all:    [{button: Kid1, event: both, lights_on: [kid1_center, kid1_rail]}]
+  kid1_center: [{button: kid1, event: left}]
+  kid1_rail:   [{button: kid1, event: right}]
+  kid1_all:    [{button: kid1, event: both, lights_on: [kid1_center, kid1_rail]}]
 
-  kid2_sun:   [{button: Kid2, event: left}]
-  kid2_rail:  [{button: Kid2, event: right}]
-  kid2_all:   [{button: Kid2, event: both, lights_on: [kid2_sun, kid2_rail]}]
+  kid2_sun:   [{button: kid2, event: left}]
+  kid2_rail:  [{button: kid2, event: right}]
+  kid2_all:   [{button: kid2, event: both, lights_on: [kid2_sun, kid2_rail]}]
 
   corridor_left:
-    - {button: Corrdior, event: right, lights_on: [corridor_left, corridor_center], lights_off: corridor_left}
+    - {button: corridor, event: right, lights_on: [corridor_left, corridor_center], lights_off: corridor_left}
       # Switch button above also turns ON Center corridor section
-    - {button: Kitchen1, event: left_double}
+    - {button: kitchen2, event: right_double}
   corridor_right:
-    - {button: Corrdior, event: left, lights_on: [corridor_right, corridor_center], lights_off: corridor_right}
+    - {button: corridor, event: left, lights_on: [corridor_right, corridor_center], lights_off: corridor_right}
       # Switch button above also also turns ON Center corridor section
-    - {button: Kitchen2, event: right_double}
+    - {button: kitchen1, event: left_double}
   corridor_center:
-    - {button: Corrdior, event: both}
+    - {button: corridor, event: both}
 
   kitchen:
-    - {button: Kitchen1, event: right, lights_on: [kitchen_cook, kitchen_table]}
-    - {button: Kitchen2, event: right, lights_on: [kitchen_cook, kitchen_table]}
+    - {button: kitchen1, event: right, lights_on: [kitchen_cook, kitchen_table]}
+    - {button: kitchen2, event: right, lights_on: [kitchen_cook, kitchen_table]}
   cabinet:
-    - {button: Kitchen1, event: left}
-    - {button: Kitchen2, event: left}
+    - {button: kitchen1, event: left}
+    - {button: kitchen2, event: left}
   kitchen_cabinet:
-    - {button: Kitchen1, event: double, lights_on: [kitchen_cook, kitchen_table, cabinet]}
-    - {button: Kitchen2, event: double, lights_on: [kitchen_cook, kitchen_table, cabinet]}
+    - {button: kitchen1, event: both, lights_on: [kitchen_cook, kitchen_table, cabinet]}
+    - {button: kitchen2, event: both, lights_on: [kitchen_cook, kitchen_table, cabinet]}
 
   bathroom:
-    - {button: Bathroom, event: single, switch_off: 15}
-  BathroomFan:
-    - {button: Bathroom, event: double, switch_off: 15} # TODO: is there triple click? as double is wanted for magic click
+    - {button: bathroom, event: single, switch_off: 60}
+  switch.bathroom_fan:
+    - {button: bathroom, event: double, switch_off: 15}
   shower:
-    - {button: Shower, event: single, switch_off: 15}
-  ShowerFan:
-    - {button: Shower, event: double, switch_off: 15}   # TODO: is there triple click? as double is wanted for magic click
+    - {button: shower, event: single, switch_off: 15}
+  switch.shower_fan:
+    - {button: shower, event: double, switch_off: 15}
 
-  laundry:     [{button: Corridor, event: right_double, switch_off: 10}]
-  cloack_room: [{button: Corridor, event: left_double, switch_off: 10}]
+  laundry:     [{button: corridor, event: right_double, switch_off: 10}]
+  cloack_room: [{button: corridor, event: left_double, switch_off: 10}]
 
 ###########################################################################################
 # Sensors and states automation
@@ -98,25 +98,29 @@ sensor_default_switch_off: 5
 
 sensor_map:
   bathroom:
-    - {sensor: binary_sensor.Bathroom_occupancy, value: 'on'}
-    # NOTE: occupancy sensor may not work well in high humidity so prevent lights from turning off
-    - {sensor: Bathroom_humidity, value: [75,100], switch_off: 1}
+    - {sensor: binary_sensor.bathroom_occupancy, value: 'on'}
+    # NOTE: occupancy sensor may not work well in high humidity
+    # Also person could be out of sensor's range while taking shower
+    # so prevent lights from turning off
+    - {sensor: bathroomht_humidity, value: [75,100], switch_off: 1}
   shower:
-    - {sensor: binary_sensor.Shower_occupancy, value: 'on'}
-    # NOTE: occupancy sensor may not work well in high humidity so prevent lights from turning off
-    - {sensor: Shower_humidity, value: [75,100], switch_off: 1}
+    - {sensor: binary_sensor.shower_occupancy, value: 'on'}
+    # NOTE: occupancy sensor may not work well in high humidity
+    # Also person could be out of sensor's range while taking shower
+    # so prevent lights from turning off
+    - {sensor: showerht_humidity, value: [75,100], switch_off: 1}
   laundry:
-    - {sensor: binary_sensor.Laundry_occupancy, value: 'on'}
+    - {sensor: binary_sensor.laundry_occupancy, value: 'on'}
   cloackroom:
-    - {sensor: binary_sensor.Cloackroom_occupancy, value: 'on'}
+    - {sensor: binary_sensor.cloackroom_occupancy, value: 'on'}
   switch.bathroom_bidet:
     - {sensor: light.bathroom, value: 'on', 'auto': yes, switch_off: 1}
-  switch.BathroomFan:
-    - {sensor: Bathroom_humidity, value: [75,100], 'auto': yes, switch_off: 15}
+  switch.bathroom_fan:
+    - {sensor: bathroomht_humidity, value: [70,100], 'auto': yes, switch_off: 15}
   switch.shower_bidet:
     - {sensor: light.shower, value: 'on', 'auto': yes, switch_off: 1}
-  switch.ShowerFan:
-    - {sensor: Shower_humidity, value: [75,100], 'auto': yes, switch_off: 15}
+  switch.shower_fan:
+    - {sensor: showerht_humidity, value: [70,100], 'auto': yes, switch_off: 15}
 
 ###########################################################################################
 # Power saving and dynamic lighting
@@ -167,7 +171,7 @@ off_state:
       state: 'off'
     # At last condition to turn ON
     - sensor: sun.sun
-      value: 'off'  # 'below_horizon'
+      value: 'below_horizon'
       state: 'on'
 
   laundry:
@@ -188,7 +192,7 @@ off_state:
       state: 'off'
     # At last condition to turn ON
     - sensor: sun.sun
-      value: 'off'  # 'below_horizon'
+      value: 'below_horizon'
       state: 'on'
 
 
@@ -233,5 +237,5 @@ automation_map:
   lights_bathroom: bathroom
   lights_shower: shower
   lights_service: [cloack_room, laundry]
-  relays_bathroom: [switch.BathroomFan, switch.bathroom_bidet]
-  relays_shower: [switch.ShowerFan, switch.shower_bidet]
+  relays_bathroom: [switch.bathroom_fan, switch.bathroom_bidet]
+  relays_shower: [switch.shower_fan, switch.shower_bidet]

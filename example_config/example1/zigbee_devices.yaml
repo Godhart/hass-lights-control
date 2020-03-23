@@ -1,56 +1,53 @@
 '0xXXXXXXXXXXXXXXXX':
-  friendly_name: button_Test
+  friendly_name: button_test
   retain: false
 '0xXXXXXXXXXXXXXXXX':
-  friendly_name: button_Bathroom
+  friendly_name: button_bathroom
   retain: false
 '0xXXXXXXXXXXXXXXXX':
-  friendly_name: sensor_Bathroom
+  friendly_name: sensor_bathroom
   retain: false
 '0xXXXXXXXXXXXXXXXX':
-  friendly_name: sensor_BathroomHT
+  friendly_name: bathroom_fan
   retain: false
 '0xXXXXXXXXXXXXXXXX':
-  friendly_name: BathroomFan
+  friendly_name: button_bedroom
   retain: false
 '0xXXXXXXXXXXXXXXXX':
-  friendly_name: button_Bedroom
+  friendly_name: sensor_cloackroom
   retain: false
 '0xXXXXXXXXXXXXXXXX':
-  friendly_name: sensor_Cloackroom
+  friendly_name: button_corridor
   retain: false
 '0xXXXXXXXXXXXXXXXX':
-  friendly_name: button_Corridor
+  friendly_name: button_guestroom
   retain: false
 '0xXXXXXXXXXXXXXXXX':
-  friendly_name: button_Guestroom
+  friendly_name: button_dunya
   retain: false
 '0xXXXXXXXXXXXXXXXX':
-  friendly_name: button_Kid1
+  friendly_name: button_zhenya
   retain: false
 '0xXXXXXXXXXXXXXXXX':
-  friendly_name: button_Kid2
+  friendly_name: button_kitchen1
   retain: false
 '0xXXXXXXXXXXXXXXXX':
-  friendly_name: button_Kitchen
+  friendly_name: button_kitchen2
   retain: false
 '0xXXXXXXXXXXXXXXXX':
-  friendly_name: button_Kitchen2
+  friendly_name: sensor_laundry
   retain: false
 '0xXXXXXXXXXXXXXXXX':
-  friendly_name: sensor_Laundry
+  friendly_name: button_shower
   retain: false
 '0xXXXXXXXXXXXXXXXX':
-  friendly_name: button_Shower
+  friendly_name: sensor_shower
   retain: false
 '0xXXXXXXXXXXXXXXXX':
-  friendly_name: sensor_Shower
+  friendly_name: sensor_showerht
   retain: false
 '0xXXXXXXXXXXXXXXXX':
-  friendly_name: sensor_ShowerHT
+  friendly_name: shower_fan
   retain: false
 '0xXXXXXXXXXXXXXXXX':
-  friendly_name: ShowerFan
-  retain: false
-'0xXXXXXXXXXXXXXXXX':
-  friendly_name: ZigBeeRouter
+  friendly_name: zigbee_router
