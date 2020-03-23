@@ -2,6 +2,8 @@
 
 ![HASS Lights Control add-on standalone test](https://github.com/Godhart/hass-lights-control/workflows/HASS%20Lights%20Control%20add-on%20standalone%20test/badge.svg)
 
+Development state: `alpha` - passes simple tests, works on single HASS instance. No thorough testing completed.
+
 > TODO: validate smoke test reference (golden) data
 
 ## Intro
@@ -22,6 +24,25 @@ See 'Using with other automation systems' section.
 * Scheduled on/off states and light's brightness change provides comfortable lighting and nightlights
 * Per light automation control - toggle off sensor based actions, automatic power savings and brightness change 
   but keep switch buttons related actions
+
+## Installation
+
+At this moment LightsControl should be installed as custom component. Create folder 'lights_control' in your HASS 
+custom components folder and copy there files or clone repo into that folder with HASS addon. 
+
+If you don't want docs and testing stuff on your HASS instance following list of files would be sufficient:
+* `LICENSE`
+* `__init__.py`
+* `manifest.json`
+* `services.yaml`
+* whole `light_control_core` folder
+
+## Configuration examples
+
+Check `example_config` for examples:
+* `example1` contains complex setup I use myself
+* `_template` contains documented template file for creating LightsControl settings from the scratch
+* `testing` contains setup that I had used to test LightsControl on isolated HASS instance
 
 ## Details
 
