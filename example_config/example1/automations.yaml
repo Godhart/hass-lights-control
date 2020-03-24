@@ -38,10 +38,11 @@
       data_template:
         name: '{{ "button." + trigger.topic.split("/")[-1][7:] }}'
         value: '{{ trigger.payload_json.click }}'
-    - service: system_log.write
-      data_template:
-        level: 'warning'
-        message: '{{ "Zigbee Button Click: button." + trigger.topic.split("/")[-1][7:] + "\n {}".format(trigger) }}'
+# For debug you may enable following:
+#    - service: system_log.write
+#      data_template:
+#        level: 'warning'
+#        message: '{{ "Zigbee Button Click: button." + trigger.topic.split("/")[-1][7:] + "\n {}".format(trigger) }}'
 
 # MQTT Zigbee Occupancy Sensor
 - alias: 'Zigebee Occupancy Sensors'
@@ -56,30 +57,33 @@
       data_template:
         name: '{{ "binary_sensor.{}_occupancy".format(trigger.topic.split("/")[-1][7:]) }}'
         value: '{{ ["off", "on"][trigger.payload_json["occupancy"]] }}'
-    - service: system_log.write
-      data_template:
-        level: 'warning'
-        message: '{{ "Zigbee Occupancy Sensor: binary_sensor.{}_occupancy\n  {}".format(trigger.topic.split("/")[-1][7:], trigger) }}'
+# For debug you may enable following:
+#    - service: system_log.write
+#      data_template:
+#        level: 'warning'
+#        message: '{{ "Zigbee Occupancy Sensor: binary_sensor.{}_occupancy\n  {}".format(trigger.topic.split("/")[-1][7:], trigger) }}'
 
 # MQTT Zigbee Humidity Sensor
-# NOTE: It's here for example as actually automation for humidity sensor isn't required for this setup
-#       as humidity sensor is setup to use autotrigger or used to retain ON state (which doesn't requires this at all)
-- alias: 'Zigebee Humidity Sensors'
-  trigger:
-    platform: mqtt
-    topic: zigbee2mqtt/+
-  condition:
-    condition: template
-    value_template: '{{ "/sensor_" in trigger.topic and "humidity" in trigger.payload_json }}'
-  action:
-    - service: lights_control.sensor
-      data_template:
-        name: '{{ "sensor.{}_humidity".format(trigger.topic.split("/")[-1][7:]) }}'
-        value: '{{ trigger.payload_json["humidity"]|float }}'
-    - service: system_log.write
-      data_template:
-        level: 'warning'
-        message: '{{ "Zigbee Humidity Sensor: sensor.{}_humidity\n  {}".format(trigger.topic.split("/")[-1][7:], trigger) }}'
+# Since Humidity sensor is used with autotrigger option or used just to retain lights on
+# section below is disabled
+# You can reenable it if you need call some other services when humidity goes high
+#- alias: 'Zigebee Humidity Sensors'
+#  trigger:
+#    platform: mqtt
+#    topic: zigbee2mqtt/+
+#  condition:
+#    condition: template
+#    value_template: '{{ "/sensor_" in trigger.topic and "humidity" in trigger.payload_json }}'
+#  action:
+#    - service: lights_control.sensor
+#      data_template:
+#        name: '{{ "sensor.{}_humidity".format(trigger.topic.split("/")[-1][7:]) }}'
+#        value: '{{ trigger.payload_json["humidity"]|float }}'
+# For debug you may enable following:
+#    - service: system_log.write
+#      data_template:
+#        level: 'warning'
+#        message: '{{ "Zigbee Humidity Sensor: sensor.{}_humidity\n  {}".format(trigger.topic.split("/")[-1][7:], trigger) }}'
 
 # Lights automation control
 # TODO: try to create with template
