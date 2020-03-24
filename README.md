@@ -2,7 +2,8 @@
 
 ![HASS Lights Control add-on standalone test](https://github.com/Godhart/hass-lights-control/workflows/HASS%20Lights%20Control%20add-on%20standalone%20test/badge.svg)
 
-Development state: `alpha` - passes simple tests, works on single HASS instance. No thorough testing completed.
+Development state: `alpha` - passes simple tests, works on single HASS instance using rather complex configuration. 
+No thorough testing completed.
 
 > TODO: validate smoke test reference (golden) data
 
@@ -20,10 +21,10 @@ See 'Using with other automation systems' section.
 
 * Short and simple automation description for environments with high amount of lights/switch buttons/sensors
 * Switch buttons, Sensors, HASS states and other automations can be used to control lights
-* Scheduled PowerSaving allows use different automatic turn-off scenarios
+* Scheduled PowerSavings
 * Scheduled on/off states and light's brightness change provides comfortable lighting and nightlights
-* Per light automation control - toggle off sensor based actions, automatic power savings and brightness change 
-  but keep switch buttons related actions
+* Per light automation control - turn off sensor based actions, power savings and brightness control
+  but keep switch buttons related actions (i.e. manual actions) 
 
 ## Installation
 
@@ -40,7 +41,7 @@ If you don't want docs and testing stuff on your HASS instance following list of
 ## Configuration examples
 
 Check `example_config` for examples:
-* `example1` contains complex setup I use myself
+* `example1` contains complex setup I use myself and it comes with detailed annotation
 * `_template` contains documented template file for creating LightsControl settings from the scratch
 * `testing` contains setup that I had used to test LightsControl on isolated HASS instance
 
@@ -575,10 +576,10 @@ This should be enough.
 
 > TODO: make sure that automation for groups update works
 
-> TODO: support turn_on/turn_off/toggle/set_level so LightsControl can be used as light proxy
+> TODO: support turn_on/turn_off/toggle/set_level so LightsControl can be used as light domain proxy
 
-> TODO: resolve overlapping time ranges
+> TODO: resolve overlapping time ranges (at this moment it's resolved for on/off states only)
 
-> TODO: support lights tinting. can be combined with brightness?
+> TODO: support lights tinting
 
 > TODO: support ANDing sensor conditions
