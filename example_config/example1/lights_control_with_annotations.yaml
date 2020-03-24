@@ -1,0 +1,353 @@
+# NOTE: functional content of this file is equivalent to lights_control.yaml
+#       but this one contains more annotations
+
+#lights_list:  # Just a list of lights to see them all in one place
+## Test Led is on Arduino board
+#  - test_led
+## Common lights
+#  - bedroom_main
+#  - bedroom_contour
+#  - guestroom_main
+#  - guestroom_back
+#  - kid1_center
+#  - kid1_rail
+#  - kid2_sun
+#  - kid2_rail
+#  - corridor_left
+#  - corridor_right
+#  - corridor_center
+#  - kitchen_cook
+#  - kitchen_table
+#  - cabinet
+#  - shower
+#  - cloack_room
+## Lights with nightlight function
+#  - bathroom
+#  - laundry
+## Relays
+#  - switch.bathroom_fan
+#  - switch.bathroom_bidet
+#  - switch.shower_fan
+#  - switch.shower_bidet
+
+###########################################################################################
+# Switch buttons setup
+switch_map: # Every event enlisted in switch_map would toggle associated light on/off
+
+  test_led: # For events within this section without defined fields 'lights_on' ond 'lights_off'
+            # associated light would be 'light.test_led'
+    # Test led would be automatically switched off after 5 minutes
+    - {button: test, event: single, switch_off: 5}
+    # Test led would be automatically switched off after 3 minutes
+    # also 'magic' option allows this event to toggle light to max brightness / total blackout
+    # under certain conditions (see full doc for details)
+    - {button: test, event: double, switch_off: 3, magic: yes}
+
+  # Turn off all lights with just single switch button.
+  # This button placed is right after front door so it comes very handy when going away
+  # NOTE: lights_on list is empty, so double click wouldn't turn all lights on
+  all_lights:
+    - {button: Corridor, event: both_double, lights_on: [], lights_off:[group.lights_all]}
+
+  # Simply toggle one of bedroom's lights
+  # Same button panel, different clicks
+  bedroom_main:      [{button: bedroom, event: left}]
+  bedroom_contour:   [{button: bedroom, event: right}]
+
+  # This one toggles all bedroom's light simultaneously
+  # If at moment of event at least one light in group is turned off, that all would be toggled ON
+  # if all is on - then all would be toggled OFF
+  befroom_all:       [{button: bedroom, event: both, lights_on: [bedroom_main, bedroom_contour]}]
+  # NOTE: separate rule is required to turn ON/OFF bedroom_main and bedroom_contour lights simultaneously
+  # otherwise (if set bedroom_main events to [left, both] and bedroom_contour events to [right, both])
+  # bedroom_main and bedroom_contour lights may toggle ON/OFF out of phase by 'both' event
+  # i.e. if bedroom_main were turned ON and bedroom_contour were turned OFF then 'both' event
+  # would toggle bedroom_main to OFF and bedroom_contour to ON
+  # To avoid this separate rule like this is required
+
+  # Other living rooms lights behave same as bedroom lights...
+  guestroom_main:    [{button: guestroom, event: left}]
+  guestroom_back:    [{button: guestroom, event: right}]
+  guestroom_all:     [{button: guestroom, event: both, lights_on: [bedroom_main, bedroom_contour]}]
+
+  kid1_center: [{button: kid1, event: left}]
+  kid1_rail:   [{button: kid1, event: right}]
+  kid1_all:    [{button: kid1, event: both, lights_on: [kid1_center, kid1_rail]}]
+
+  kid2_sun:   [{button: kid2, event: left}]
+  kid2_rail:  [{button: kid2, event: right}]
+  kid2_all:   [{button: kid2, event: both, lights_on: [kid2_sun, kid2_rail]}]
+
+  # Corridor lights, a bit tricky
+  # * 3 sections - center at front door, left and right hallways to cabinet + kitchen zone
+  # * Turned on/off from multiple places - from front door, and left door
+  # * I was restricted to use two-button panels, so there is some 'magic'
+
+  # Left hallway
+  corridor_left:
+    # Button at front door turns on simultaneously lights in left and center zone
+    # but turn's off only lights in left zone
+    - {button: corridor, event: right, lights_on: [corridor_left, corridor_center], lights_off: corridor_left}
+    # Double click at kitchen buttons panel also toggles hallway's light
+    - {button: kitchen2, event: right_double}
+  # Right hallway. Same principles as for left
+  corridor_right:
+    - {button: corridor, event: left, lights_on: [corridor_right, corridor_center], lights_off: corridor_right}
+    - {button: kitchen1, event: left_double}
+  # Front door zone. Toggled separately from left/right hallway by pressing both buttons simultaneously
+  corridor_center:
+    - {button: corridor, event: both}
+
+  # Cabinet + kitchen zone.
+  # Kitchen lights and cabinet lights share same button panel and saves me some $$$ and space on the walls
+  kitchen:
+    - {button: kitchen1, event: right, lights_on: [kitchen_cook, kitchen_table]}
+    - {button: kitchen2, event: right, lights_on: [kitchen_cook, kitchen_table]}
+  cabinet:
+    - {button: kitchen1, event: left}
+    - {button: kitchen2, event: left}
+  kitchen_cabinet:
+    - {button: kitchen1, event: both, lights_on: [kitchen_cook, kitchen_table, cabinet]}
+    - {button: kitchen2, event: both, lights_on: [kitchen_cook, kitchen_table, cabinet]}
+
+  # Bathroom lights share control with blower fan
+  # Also there is power saving options - lights and fan are toggled ON for limited time
+  # NOTE: Usually it's not required to toggle lights and fan with button as there is
+  # occupancy and humidity sensor are bound to them (check sensors section below)
+  # but sensor's are doubled with manual control (even if it's via common control logic)
+  bathroom:
+    - {button: bathroom, event: single, switch_off: 60}
+  switch.bathroom_fan:
+    - {button: bathroom, event: double, switch_off: 15}
+  # For shower logic is same as for bathroom but switch off times are shorter
+  shower:
+    - {button: shower, event: single, switch_off: 15}
+  switch.shower_fan:
+    - {button: shower, event: double, switch_off: 15}
+
+  # Service zones. Nearby from front door, so they share button's panel
+  # but using dual clicks
+  # Also there is occupancy sensors bound to these zones
+  laundry:     [{button: corridor, event: right_double, switch_off: 10}]
+  cloack_room: [{button: corridor, event: left_double, switch_off: 10}]
+
+###########################################################################################
+# Sensors and states automation
+sensor_default_switch_off: 5
+
+sensor_map:
+  # Sensors map defines which sensors and under which conditions (their values)
+  # would turn light's on
+
+  # Bathroom occupancy sensor, turns on bathroom lights
+  bathroom: # For sensor rules within this section without defined fiel 'lights_on'
+            # associated light would be 'light.bathroom'
+    - {sensor: binary_sensor.bathroom_occupancy, value: 'on'}
+    # NOTE: occupancy sensor may not work well in high humidity
+    # also person could be out of sensor's range while taking bath/shower
+    # so prevent lights from turning off if humidity is high
+    - {sensor: bathroomht_humidity, value: [65,100], switch_off: 1}
+    # NOTE: you can avoid toggling lights ON when humidity goes high
+    # and use it only to retain ON state that were toggled by sensor or switch button
+    # if you don't call lights_control.sensor service on humidity sensor value change
+
+  # Shower occupancy sensor, turns on bathroom lights
+  # Logic is the same as for bathroom, but it uses higher humidity threshold
+  # since humidity is raises faster in shower
+  shower:
+    - {sensor: binary_sensor.shower_occupancy, value: 'on'}
+    - {sensor: showerht_humidity, value: [75,100], switch_off: 1}
+
+  # Service zones sensors. Simply turns lights on when occupancy is detected
+  # Lights would be toggled off after 5 minutes (default) of no occupancy
+  laundry:
+    - {sensor: binary_sensor.laundry_occupancy, value: 'on'}
+  cloackroom:
+    - {sensor: binary_sensor.cloackroom_occupancy, value: 'on'}
+
+  # Bathroom bidet shower water valve.
+  # Are used to prevent high pressure on shower to prevent accidents
+  # specially when there is no one at home
+
+  # There is a small trick about it.
+  # It uses LIGHT state as sensor. And it uses autotrigger option -
+  # when LightsControl Watchdog is called it checks all sensors with autotrigger
+  # and if there is active value then action is taken.
+  # Since watchdog is called once a second there is almost no delay from lights toggle on
+  # to valve open. But there would be 1 minute delay before closing valve which is nice
+  # since:
+  # * bathroom and shower lights are flashing 1 minute before automatic switch off which
+  # * Kids some times are playing with lights and flashing them too with button
+  # It would be better for valve itself to avoid often switch offs and certainly you don't
+  # want to be surprised with bidet shower when lights are flashing
+  # (could happen under some circumstances, when kids or occupancy sensor behaves badly for example)
+  switch.bathroom_bidet:
+    - {sensor: light.bathroom, value: 'on', 'auto': yes, switch_off: 1}
+
+  # Bathroom fan
+  # Simply toggled ON when humidity is high
+  switch.bathroom_fan:
+    - {sensor: bathroomht_humidity, value: [70,100], 'auto': yes, switch_off: 15}
+
+  # Shower bidet valve and fan replicate shower's rules
+  switch.shower_bidet:
+    - {sensor: light.shower, value: 'on', 'auto': yes, switch_off: 1}
+  switch.shower_fan:
+    - {sensor: showerht_humidity, value: [70,100], 'auto': yes, switch_off: 15}
+
+###########################################################################################
+# Power saving and dynamic lighting
+power_save:
+  # Common power saving during night time
+  # Every light would be switched off after 1 hour of inactivity (no sensor or button actions)
+  common_powersave:
+    timeout: 60
+    when: ["00:00:00", "06:59:59"]
+    lights: [group.lights_all]
+
+on_state:
+  # This one defines OFF state for lights under certain condition
+  # It could be used to reduce lights brightness during night time
+  # so you won't stress people around you while wandering in the night
+  # and keep your self in 'ready to sleep' state.
+  # State that you define for light can be a static value or refer to another HASS state
+  # which can be dynamically controlled by other component.
+  # NOTE: a bit later it would be possible to use it with components that are tinting lights
+  # based on daytime (to reduce blue light in the evening or match environment lighting etc.)
+
+  # My lights have no dimming option yet so I used 'on_state' it only for test light
+  test_led:
+    - sensor: light.shower
+      value: 'on'
+      state: 150
+    - when: ["00:00:00", "06:59:59"]
+      state: 100
+    - when: [["22:00:00", "23:59:59"], ["07:00:00", "08:59:59"]]
+      state: 200
+
+off_state:
+  # This one defines OFF state for lights under certain condition
+  # It could be a handy to use common lights as nightlights during night time for example
+  # State that you define for light can be a static value or refer to another HASS state
+  # which can be dynamically controlled by other component
+
+  # Test led is here just to do tests with off_state
+  test_led:
+    - sensor: light.shower
+      value: 'on'
+      state: 50
+    - when: ["23:00:00", "07:59:59"]
+      state: 50
+    - when: [["22:00:00", "22:59:59"], ["08:00:00", "08:59:59"]]
+      state: 100
+    - when: [["11:00:00", "12:59:59"], ["14:00:00", "15:59:59"]]
+      state: 100
+
+  # Nightlights aren't turned OFF completely on night when everybody is fell asleep
+  # Even though my lights don't support dimming yet they can be turned on in the night time
+  # When light's OFF state differs from 'off' you'll need a button event with magic option set
+  # to be able to turn lights completely off
+  bathroom:
+    # First there comes a set of conditions that prevents light going into night mode
+    # NOTE: state would be defined by first satisfied condition from the set
+    - when: ["07:00:00", "22:59:59"]  # From 7:00 and till 23:00 there would be no nightlights
+      state: 'off'
+    - sensor: light.kid1_center       # Also if kid's light is turned on there is no need in nightlight
+      value: 'on'
+      state: 'off'
+    - sensor: light.kid1_rail         # And so on...
+      value: 'on'
+      state: 'off'
+    - sensor: light.cabinet
+      value: 'on'
+      state: 'off'
+    - sensor: light.corridor_right
+      value: 'on'
+      state: 'off'
+      # At last condition to override off state - i.e. when sun is down and other conditions aren't met
+    - sensor: sun.sun
+      value: 'below_horizon'
+      state: 'on'
+
+  # Laundry's light used as nightlight too, logic is the same as for bathroom lights
+  laundry:
+    - when: ["07:00:00", "22:59:59"]
+      state: 'off'
+    - sensor: light.bedroom_main
+      value: 'on'
+      state: 'off'
+    - sensor: light.bedroom_contour
+      value: 'on'
+      state: 'off'
+    - sensor: light.corridor_center
+      value: 'on'
+      state: 'off'
+    - sensor: light.corridor_left
+      value: 'on'
+      state: 'off'
+    # At last condition to turn ON
+    - sensor: sun.sun
+      value: 'below_horizon'
+      state: 'on'
+
+###########################################################################################
+# Automatic actions notifications
+
+# Those are required to avoid unexpected 'lights off' surprises
+# You can define kind of notification and time margin after notification
+# and before switching lights off
+# After you have received notification you'll be able to take necessary actions
+# to avoid switching lights off like pressing button, showing yourself to sensor etc.
+notify_turn_off:
+
+  # Brightness of test led would be reduced twice 30 seconds before switch off
+  test_led:
+    kind: dim
+    before: 30
+
+  # Lights without dimming would flash once and shortly 60 seconds before switch off
+  # NOTE: corridor is not in a list for a purpose
+  no_surprise:
+    kind: flash
+    before: 60
+    lights:
+      - bedroom_main
+      - bedroom_contour
+      - guestroom_main
+      - guestroom_back
+      - kid1_center
+      - kid1_rail
+      - kid2_sun
+      - kid2_rail
+      - kitchen_cook
+      - kitchen_table
+      - cabinet
+      - bathroom
+      - shower
+      - laundry
+      - cloack_room
+
+###########################################################################################
+# Automation control
+# You can partially turn off LightsControl automations like sensors, power saving
+# and conditional lighting
+# With a light or group of lights a HASS entity can be associated (by default it's automation control entity)
+# Only when this HASS entity state is literally 'on' automations would work for this light
+# otherwise it can be switched on/off with buttons only, sensors and power saving options wouldn't work
+# and light's on and off states would be common defaults ('on' with brightness 255 / 'off' accordingly)
+automation_map:
+  # Test Led on Arduino board
+  lights_test_led: test_led
+  # Common lights
+  lights_bedroom: [bedroom_main, bedroom_contour]     # automation.lights_bedroom affects lights 'bedroom_main' and 'bedroom_contour'
+  lights_guestroom: [guestroom_main, guestroom_back]  # and so on...
+  lights_kid1: [kid1_center, kid1_rail]
+  lights_kid2: [kid2_sun, kid2_rail]
+  lights_corridor: [corridor_left, corridor_right, corridor_center]
+  lights_kitchen: [kitchen_cook, kitchen_table]
+  lights_cabinet: cabinet
+  lights_bathroom: bathroom
+  lights_shower: shower
+  lights_service: [cloack_room, laundry]
+  relays_bathroom: [switch.bathroom_fan, switch.bathroom_bidet]
+  relays_shower: [switch.shower_fan, switch.shower_bidet]
