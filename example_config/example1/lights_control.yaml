@@ -1,31 +1,6 @@
-#lights_list:  # Just a list of lights to see them all in one place
-## Test Led on Arduino board
-#  - test_led
-## Common lights
-#  - bedroom_main
-#  - bedroom_contour
-#  - guestroom_main
-#  - guestroom_back
-#  - kid1_center
-#  - kid1_rail
-#  - kid2_sun
-#  - kid2_rail
-#  - corridor_left
-#  - corridor_right
-#  - corridor_center
-#  - kitchen_cook
-#  - kitchen_table
-#  - cabinet
-#  - shower
-#  - cloack_room
-## Lights with nightlight function
-#  - bathroom
-#  - laundry
-## Relays
-#  - switch.bathroom_fan
-#  - switch.bathroom_bidet
-#  - switch.shower_fan
-#  - switch.shower_bidet
+# NOTE: see 'lights_control_with_annotations.yaml' to get detailed annotations
+#       about purpose of records in this config.
+#       This one comes with vital annotations only to have all rules in sight
 
 ###########################################################################################
 # Switch buttons setup
@@ -34,18 +9,12 @@ switch_map:
     - {button: test, event: single, switch_off: 5}
     - {button: test, event: double, switch_off: 3, magic: yes}
 
-  # all_lights:   # Turn off all lights with just single switch button
-  #  - {button: Corrdior, event: both_double, lights_on: [], lights_off:[group.lights_all]}
+  all_lights:   # Turn off all lights with just single switch button
+    - {button: Corridor, event: both_double, lights_on: [], lights_off:[group.lights_all]}
 
   bedroom_main:      [{button: bedroom, event: left}]
   bedroom_contour:   [{button: bedroom, event: right}]
   befroom_all:       [{button: bedroom, event: both, lights_on: [bedroom_main, bedroom_contour]}]
-  # NOTE: separate rule is required to turn ON/OFF bedroom_main and bedroom_contour lights simultaneously
-  # otherwise (if set bedroom_main events to [left, both] and bedroom_contour events to [right, both]
-  # bedroom_main and bedroom_contour lights may toggle ON/OFF out of phase by 'both' event
-  # i.e. if bedroom_main were turned ON and bedroom_contour were turned OFF then 'both' event
-  # would toggle bedroom_main to OFF and bedroom_contour to ON
-  # To avoid this separate rule like this is required
 
   guestroom_main:    [{button: guestroom, event: left}]
   guestroom_back:    [{button: guestroom, event: right}]
@@ -99,15 +68,9 @@ sensor_default_switch_off: 5
 sensor_map:
   bathroom:
     - {sensor: binary_sensor.bathroom_occupancy, value: 'on'}
-    # NOTE: occupancy sensor may not work well in high humidity
-    # Also person could be out of sensor's range while taking shower
-    # so prevent lights from turning off
     - {sensor: bathroomht_humidity, value: [75,100], switch_off: 1}
   shower:
     - {sensor: binary_sensor.shower_occupancy, value: 'on'}
-    # NOTE: occupancy sensor may not work well in high humidity
-    # Also person could be out of sensor's range while taking shower
-    # so prevent lights from turning off
     - {sensor: showerht_humidity, value: [75,100], switch_off: 1}
   laundry:
     - {sensor: binary_sensor.laundry_occupancy, value: 'on'}
@@ -128,8 +91,7 @@ power_save:
   common_powersave:
     timeout: 60
     when: ["00:00:00", "06:59:59"]
-    # lights: [group.lights_all]
-    lights: [corridor_center]
+    lights: [group.lights_all]
 
 on_state:
   test_led:
@@ -195,9 +157,8 @@ off_state:
       value: 'below_horizon'
       state: 'on'
 
-
 ###########################################################################################
-# Automation control
+# Automatic actions notifications
 notify_turn_off:
   test_led:
     kind: dim
@@ -223,6 +184,8 @@ notify_turn_off:
       - laundry
       - cloack_room
 
+###########################################################################################
+# Automation control
 automation_map:
   # Test Led on Arduino board
   lights_test_led: test_led
