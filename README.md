@@ -242,6 +242,10 @@ Next switch off time would depend on event's switch off timeout.
 > NOTE: if you have bi-stable switches with on/off state, not click switches, then switch flicking (ON->OFF->ON) 
 would make lights flash as you do that if you don't set inertial delay for switch OFF state automation
 
+## More Explanations with Illustrations 
+
+More detailed explanations about how things works can be found [here](docs/EXPLAINED.md)
+
 ## Configuration
 
 This section describes how to configure LightsControl and HASS automations for your needs.
