@@ -26,7 +26,7 @@ By default `ON state` corresponds to lights on with brightness 255, `OFF state` 
 
 On diagrams below Light State defined as shown below:
 
-![OnOffRange](images\OnOffRange.png)
+![OnOffRange.png](images/OnOffRange.png)
 
 Bottom double line corresponds to black out, a bit higher line corresponds to light on with brightness 0, 
 on top - light on with brightness 255.
@@ -39,7 +39,7 @@ You may define different ON and OFF states for certain periods of time.
 
 Example of such schedule is shown on diagram below:
 
-![OnOffSchedule.png](images\OnOffSchedule.png)
+![OnOffSchedule.png](images/OnOffSchedule.png)
 
 Top dotted line depicts ON state schedule and  bottom dotted OFF state schedule
 
@@ -56,7 +56,7 @@ service is called. Normally 1 second period is fine.
 
 Diagram below shows how state of Light Entity is changed by toggle events and during time.
 
-![OnOffSwtiching.png](images\OnOffSwtiching.png)
+![OnOffSwtiching.png](images/OnOffSwtiching.png)
 
 Magenta line depicts actual state of Light Entity.
 
