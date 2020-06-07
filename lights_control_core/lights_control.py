@@ -19,7 +19,7 @@ LOG_WATCHDOG = False    # Log watchdog calls starts
 INFIELD_DEBUG = False   # Log messages for infield debugging (should be removed bit later)
 
 _VALID_TIMERANGE_MULTI = 2
-_VALID_TIMERANGE_SINGLE = 2
+_VALID_TIMERANGE_SINGLE = 1
 
 class _ChoppedTime(object):
 
