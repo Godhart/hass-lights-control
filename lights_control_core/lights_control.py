@@ -18,6 +18,8 @@ LOG_CALLS = False       # Log service calls starts besides watchdog
 LOG_WATCHDOG = False    # Log watchdog calls starts
 INFIELD_DEBUG = False   # Log messages for infield debugging (should be removed bit later)
 
+_VALID_TIMERANGE_MULTI = 2
+_VALID_TIMERANGE_SINGLE = 2
 
 class _ChoppedTime(object):
 
@@ -1085,18 +1087,18 @@ class LightsControl(object):
         if not isinstance(time_range, (list, tuple)):
             raise ValueError("time_range should be a list of 2 _ChoppedTime items or list of such lists")
         if len(time_range) < 1:
-            return 2
+            return _VALID_TIMERANGE_MULTI
         elif isinstance(time_range[0], _ChoppedTime):
             if len(time_range) != 2:
                 raise ValueError("time_range should be a list of 2 _ChoppedTime items or list of such lists")
             else:
-                return 1
+                return _VALID_TIMERANGE_SINGLE
         elif go_deeper:
             vr = [self._validate_time_range(item, go_deeper=False) for item in time_range]
-            if not all(r == 1 for r in vr):
+            if not all(r == _VALID_TIMERANGE_SINGLE for r in vr):
                 raise ValueError("time_range should be a list of 2 _ChoppedTime items or list of such lists")
             else:
-                return 2
+                return _VALID_TIMERANGE_MULTI
         else:
             raise ValueError("time_range should be a list of 2 _ChoppedTime items or list of such lists")
 
@@ -1105,7 +1107,7 @@ class LightsControl(object):
         r = []
         vr = self._validate_time_range(time_range)
 
-        if vr == 2:
+        if vr == _VALID_TIMERANGE_MULTI:
             return any(self._time_in_range(item, value) for item in time_range)
 
         r.append(_ChoppedTime(time_range[0]))
