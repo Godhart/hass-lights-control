@@ -97,6 +97,10 @@ CUSTOM or BLACKOUT state depending on current ON/OFF state.
 If lights are switched to CUSTOM or BLACKOUT state then LightsControl won't change their brightness by schedule and 
 would use only power saving logic to toggle into OFF state in case if lights were not blacked out.
 
+> NOTE: In current version of LightsControl the only way to move lights out of custom state is to 
+toggle them ON or OFF by switch button (any event without magic, or event in magic in case 
+if at least one state is not customized)
+
 ### Lights toggling
 
 That section describes main logic that toggles light's state. Lights are toggled by switch buttons and sensors.
