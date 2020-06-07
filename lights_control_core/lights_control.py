@@ -1405,6 +1405,7 @@ class LightsControl(object):
             return
         if DISABLE_SENSORS_WITH_AUTOMATION and not self._automation_is_active(light):
             return
+        # TODO: don't toggle light if it is in custom state
         if self._sensor_is_active(routine['sensor'],
                                   activating_value=routine['value'],
                                   active_time=routine['when'],
