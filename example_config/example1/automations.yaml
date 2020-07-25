@@ -20,10 +20,11 @@
       data_template:
         name: '{{ trigger.event.data.entity_id }}'
         value: '{{ trigger.event.data.new_state.last_changed.timestamp()|float }}'
-    - service: system_log.write
-      data_template:
-        level: 'warning'
-        message: '{{ "state of {} changed to {}".format(trigger.event.data.entity_id, trigger.event.data.new_state.as_dict()) }}'
+# For debug you may enable following:
+#    - service: system_log.write
+#      data_template:
+#        level: 'warning'
+#        message: '{{ "state of {} changed to {}".format(trigger.event.data.entity_id, trigger.event.data.new_state.as_dict()) }}'
 
 # MQTT Zigbee Button
 - alias: 'Zigebee Buttons'
